@@ -1,0 +1,221 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model UserSettings {
+  id            Int      @id @default(1)
+  theme         String   @default("light")
+  language      String   @default("en")
+  examDate      DateTime?
+  dailyWordGoal Int      @default(20)
+  dailyVerbGoal Int      @default(10)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Chapter {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  titleDe     String
+  titleEn     String
+  description String?
+  dayNumber   Int
+  words       Word[]
+  verbs       Verb[]
+  grammarRules GrammarRule[]
+  readingPassages ReadingPassage[]
+  writingPrompts  WritingPrompt[]
+  speakingPrompts SpeakingPrompt[]
+  listeningExercises ListeningExercise[]
+  createdAt   DateTime @default(now())
+}
+
+model Word {
+  id          Int      @id @default(autoincrement())
+  german      String
+  english     String
+  article     String?
+  plural      String?
+  exampleDe   String?
+  exampleEn   String?
+  chapterId   Int
+  chapter     Chapter  @relation(fields: [chapterId], references: [id])
+  progress    WordProgress[]
+}
+
+model WordProgress {
+  id          Int      @id @default(autoincrement())
+  wordId      Int
+  word        Word     @relation(fields: [wordId], references: [id])
+  seenCount   Int      @default(0)
+  correctCount Int     @default(0)
+  wrongCount  Int      @default(0)
+  isWeak      Boolean  @default(false)
+  lastSeen    DateTime?
+  nextReview  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([wordId])
+}
+
+model Verb {
+  id              Int      @id @default(autoincrement())
+  infinitive      String
+  english         String
+  auxiliary        String   @default("haben")
+  partizipII      String
+  praeteritum     String?
+  ichPraesens     String
+  duPraesens      String
+  erPraesens      String
+  wirPraesens     String
+  ihrPraesens     String
+  siePraesens     String
+  isIrregular     Boolean  @default(false)
+  exampleDe       String?
+  exampleEn       String?
+  chapterId       Int
+  chapter         Chapter  @relation(fields: [chapterId], references: [id])
+  progress        VerbProgress[]
+}
+
+model VerbProgress {
+  id           Int      @id @default(autoincrement())
+  verbId       Int
+  verb         Verb     @relation(fields: [verbId], references: [id])
+  seenCount    Int      @default(0)
+  correctCount Int      @default(0)
+  wrongCount   Int      @default(0)
+  isWeak       Boolean  @default(false)
+  lastSeen     DateTime?
+  nextReview   DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([verbId])
+}
+
+model GrammarRule {
+  id          Int      @id @default(autoincrement())
+  titleDe     String
+  titleEn     String
+  formula     String
+  explanationDe String
+  explanationEn String
+  example1De  String
+  example1En  String
+  example2De  String
+  example2En  String
+  chapterId   Int
+  chapter     Chapter  @relation(fields: [chapterId], references: [id])
+  exercises   SentenceExercise[]
+}
+
+model SentenceExercise {
+  id            Int      @id @default(autoincrement())
+  type          String   // "fill_in" or "write"
+  promptDe      String
+  promptEn      String?
+  answer        String
+  hint          String?
+  grammarRuleId Int
+  grammarRule   GrammarRule @relation(fields: [grammarRuleId], references: [id])
+  progress      SentenceProgress[]
+}
+
+model SentenceProgress {
+  id           Int      @id @default(autoincrement())
+  exerciseId   Int
+  exercise     SentenceExercise @relation(fields: [exerciseId], references: [id])
+  attempts     Int      @default(0)
+  isCorrect    Boolean  @default(false)
+  isWeak       Boolean  @default(false)
+  lastAttempt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([exerciseId])
+}
+
+model ReadingPassage {
+  id          Int      @id @default(autoincrement())
+  titleDe     String
+  titleEn     String
+  contentDe   String
+  questions   String   // JSON array of questions with options and correct answer
+  timeLimitSeconds Int @default(300)
+  chapterId   Int
+  chapter     Chapter  @relation(fields: [chapterId], references: [id])
+}
+
+model ListeningExercise {
+  id          Int      @id @default(autoincrement())
+  titleDe     String
+  titleEn     String
+  youtubeUrl  String
+  questions   String   // JSON array of questions
+  chapterId   Int
+  chapter     Chapter  @relation(fields: [chapterId], references: [id])
+}
+
+model WritingPrompt {
+  id            Int      @id @default(autoincrement())
+  type          String   // "email", "letter", "complaint", etc.
+  promptDe      String
+  promptEn      String
+  modelAnswer   String
+  checklist     String   // JSON array of checklist items
+  chapterId     Int
+  chapter       Chapter  @relation(fields: [chapterId], references: [id])
+}
+
+model SpeakingPrompt {
+  id            Int      @id @default(autoincrement())
+  type          String   // "monologue", "dialogue", "picture_description"
+  promptDe      String
+  promptEn      String
+  keyPhrases    String   // JSON array
+  modelAnswer   String
+  timeLimitSeconds Int   @default(120)
+  chapterId     Int
+  chapter       Chapter  @relation(fields: [chapterId], references: [id])
+  recordings    Recording[]
+}
+
+model Recording {
+  id              Int      @id @default(autoincrement())
+  speakingPromptId Int
+  speakingPrompt  SpeakingPrompt @relation(fields: [speakingPromptId], references: [id])
+  filePath        String
+  durationSeconds Int?
+  notes           String?
+  createdAt       DateTime @default(now())
+}
+
+model MockTest {
+  id          Int      @id @default(autoincrement())
+  dayNumber   Int
+  type        String   // "mini" or "full"
+  sections    String   // JSON: which sections included
+  score       Float?
+  maxScore    Float?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+}
+
+model DailyLog {
+  id            Int      @id @default(autoincrement())
+  date          DateTime @unique
+  wordsLearned  Int      @default(0)
+  verbsLearned  Int      @default(0)
+  timeSpentMins Int      @default(0)
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

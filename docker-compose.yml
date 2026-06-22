@@ -1,0 +1,29 @@
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+      - ./data:/app/data
+    environment:
+      - DATABASE_URL=file:/app/data/german-b1.db
+      - NODE_ENV=development
+    restart: unless-stopped
+
+  test:
+    build:
+      context: .
+      target: test
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - DATABASE_URL=file:/app/data/test.db
+      - NODE_ENV=test
+    profiles:
+      - test

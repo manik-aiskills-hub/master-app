@@ -1,0 +1,10 @@
+node_modules/
+.next/
+out/
+data/
+*.db
+.env.local
+.env.production
+coverage/
+.DS_Store
+._*
