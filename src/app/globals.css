@@ -695,3 +695,104 @@ body {
 .score-grade--good { color: var(--accent); }
 .score-grade--fair { color: var(--warning); }
 .score-grade--poor { color: var(--error); }
+
+/* Exam */
+.exam-section-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.exam-section-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: var(--accent);
+}
+
+.exam-passage-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s;
+}
+
+.exam-passage-card:hover { border-color: var(--accent); }
+
+.exam-passage-title { font-weight: 600; margin-bottom: 0.25rem; }
+
+.exam-passage-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.timer {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  padding: 0.3rem 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.timer--warning { color: var(--error); background: rgba(231, 76, 60, 0.1); }
+
+.reading-content {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.reading-content p { margin-bottom: 0.75rem; }
+.reading-content p:last-child { margin-bottom: 0; }
+
+.reading-questions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.reading-question { }
+
+.reading-q-text {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.reading-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.reading-option {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.15s;
+}
+
+.reading-option:hover { border-color: var(--accent); }
+.reading-option--selected { border-color: var(--accent); background: rgba(233, 69, 96, 0.1); }
+.reading-option--correct { border-color: var(--success); background: rgba(46, 204, 113, 0.15); }
+.reading-option--wrong { border-color: var(--error); background: rgba(231, 76, 60, 0.15); }
+.reading-option:disabled { cursor: default; }
+
+.reading-result {
+  text-align: center;
+  margin-top: 1rem;
+}

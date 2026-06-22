@@ -691,8 +691,80 @@ async function main() {
 
   console.log(`  Grammar: ${totalRules} rules, ${totalExercises} exercises`);
 
+  // Seed reading passages
+  console.log("\nSeeding reading passages...");
+  const readingData: Record<string, { titleDe: string; titleEn: string; content: string; time: number; questions: { question: string; options: string[]; correctIndex: number }[] }[]> = {
+    "sich-vorstellen": [{
+      titleDe: "Neue Nachbarin", titleEn: "New Neighbor",
+      content: "Hallo, ich bin Maria. Ich komme aus Spanien, aber ich lebe seit zwei Jahren in Berlin. Ich bin 28 Jahre alt und arbeite als Grafikdesignerin bei einer kleinen Agentur. In meiner Freizeit male ich gern und gehe oft ins Museum. Ich spreche Spanisch, Englisch und ein bisschen Deutsch. Ich lerne Deutsch seit einem Jahr an der Volkshochschule. Mein Ziel ist die telc B1 Prüfung.",
+      time: 180,
+      questions: [
+        { question: "Woher kommt Maria?", options: ["Deutschland", "Spanien", "Italien"], correctIndex: 1 },
+        { question: "Was ist Marias Beruf?", options: ["Lehrerin", "Ärztin", "Grafikdesignerin"], correctIndex: 2 },
+        { question: "Wie lange lernt Maria Deutsch?", options: ["Zwei Jahre", "Ein Jahr", "Sechs Monate"], correctIndex: 1 },
+      ],
+    }],
+    "wohnen": [{
+      titleDe: "Wohnungsanzeige", titleEn: "Apartment Ad",
+      content: "Schöne 3-Zimmer-Wohnung in Berlin-Kreuzberg zu vermieten. Die Wohnung hat 75 Quadratmeter und liegt im 3. Stock mit Aufzug. Sie hat ein großes Wohnzimmer, zwei Schlafzimmer, eine moderne Küche und ein Badezimmer mit Badewanne. Es gibt auch einen Balkon mit Blick auf den Hof. Die Kaltmiete beträgt 850 Euro plus 200 Euro Nebenkosten. Die Wohnung ist ab dem 1. August verfügbar. Haustiere sind nicht erlaubt.",
+      time: 180,
+      questions: [
+        { question: "Wie groß ist die Wohnung?", options: ["65 qm", "75 qm", "85 qm"], correctIndex: 1 },
+        { question: "In welchem Stock ist die Wohnung?", options: ["2. Stock", "3. Stock", "4. Stock"], correctIndex: 1 },
+        { question: "Wie hoch ist die Warmmiete?", options: ["850 Euro", "1050 Euro", "1200 Euro"], correctIndex: 1 },
+        { question: "Sind Haustiere erlaubt?", options: ["Ja", "Nein", "Nur Katzen"], correctIndex: 1 },
+      ],
+    }],
+    "gesundheit": [{
+      titleDe: "Beim Arzt", titleEn: "At the Doctor",
+      content: "Frau Müller geht zum Arzt, weil sie seit drei Tagen Kopfschmerzen und Fieber hat. Der Arzt untersucht sie und sagt, dass sie eine starke Erkältung hat. Er verschreibt ihr Medikamente: Tabletten gegen die Kopfschmerzen und einen Hustensaft. Er empfiehlt ihr, viel Wasser zu trinken und drei Tage im Bett zu bleiben. Frau Müller bekommt auch eine Krankschreibung für ihre Arbeit.",
+      time: 180,
+      questions: [
+        { question: "Warum geht Frau Müller zum Arzt?", options: ["Bauchschmerzen", "Kopfschmerzen und Fieber", "Rückenschmerzen"], correctIndex: 1 },
+        { question: "Was hat Frau Müller?", options: ["Grippe", "Allergie", "Erkältung"], correctIndex: 2 },
+        { question: "Wie lange soll sie im Bett bleiben?", options: ["Zwei Tage", "Drei Tage", "Eine Woche"], correctIndex: 1 },
+      ],
+    }],
+    "einkaufen": [{
+      titleDe: "Sonderangebot", titleEn: "Special Offer",
+      content: "Diese Woche gibt es tolle Sonderangebote im Kaufhaus Müller! Alle Winterjacken sind 40% reduziert. Ein Paar Sportschuhe kostet nur 49,99 Euro statt 89,99 Euro. Kinderbekleidung gibt es ab 9,99 Euro. Außerdem: Beim Kauf von zwei T-Shirts bekommen Sie das dritte gratis! Die Angebote gelten nur bis Samstag. Öffnungszeiten: Montag bis Freitag 9-20 Uhr, Samstag 9-18 Uhr.",
+      time: 180,
+      questions: [
+        { question: "Wie viel Rabatt gibt es auf Winterjacken?", options: ["30%", "40%", "50%"], correctIndex: 1 },
+        { question: "Was kosten die Sportschuhe im Angebot?", options: ["39,99€", "49,99€", "59,99€"], correctIndex: 1 },
+        { question: "Bis wann gelten die Angebote?", options: ["Freitag", "Samstag", "Sonntag"], correctIndex: 1 },
+        { question: "Wann schließt das Kaufhaus am Samstag?", options: ["17 Uhr", "18 Uhr", "20 Uhr"], correctIndex: 1 },
+      ],
+    }],
+  };
+
+  let totalPassages = 0;
+  for (const ch of chapters) {
+    const chapter = await prisma.chapter.findUnique({ where: { slug: ch.slug } });
+    if (!chapter) continue;
+    const passages = readingData[ch.slug];
+    if (!passages) continue;
+
+    for (const p of passages) {
+      const existing = await prisma.readingPassage.findFirst({
+        where: { titleDe: p.titleDe, chapterId: chapter.id },
+      });
+      if (!existing) {
+        await prisma.readingPassage.create({
+          data: {
+            titleDe: p.titleDe, titleEn: p.titleEn, contentDe: p.content,
+            questions: JSON.stringify(p.questions),
+            timeLimitSeconds: p.time, chapterId: chapter.id,
+          },
+        });
+        totalPassages++;
+      }
+    }
+  }
+  console.log(`  Reading: ${totalPassages} passages`);
+
   const totalVerbs = Object.values(chapterVerbs).reduce((sum, v) => sum + v.length, 0);
-  console.log(`\nSeeding complete: 30 chapters, 600 words, ${totalVerbs} verbs, ${totalRules} grammar rules, ${totalExercises} exercises.`);
+  console.log(`\nSeeding complete: 30 chapters, 600 words, ${totalVerbs} verbs, ${totalRules} rules, ${totalExercises} exercises, ${totalPassages} reading passages.`);
 }
 
 main()
