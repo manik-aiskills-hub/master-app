@@ -440,12 +440,17 @@ body {
   color: var(--text-secondary);
 }
 
-/* Verb Link */
-.verb-link {
-  display: block;
+/* Chapter Links */
+.chapter-links {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.chapter-links .btn {
+  flex: 1;
   text-align: center;
   text-decoration: none;
-  margin-bottom: 1rem;
 }
 
 /* Verb Table Card */
@@ -536,4 +541,106 @@ body {
   color: var(--text-secondary);
   border-bottom: 2px dashed var(--border);
   padding: 0 1rem;
+}
+
+/* Grammar */
+.grammar-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.grammar-title {
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+}
+
+.grammar-formula {
+  background: var(--bg-secondary);
+  border: 2px solid var(--accent);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  font-family: monospace;
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.grammar-explanation {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.grammar-examples {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.grammar-example {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary);
+  border-radius: 0.5rem;
+  padding: 0.6rem;
+}
+
+.example-de {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.example-en {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+/* Exercise Card */
+.exercise-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.exercise-type {
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.exercise-prompt {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0.75rem 0;
+}
+
+.exercise-prompt-en {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 0.75rem;
+}
+
+.exercise-hint {
+  font-size: 0.8rem;
+  color: var(--warning);
+  margin-bottom: 0.75rem;
+}
+
+.exercise-retry {
+  text-align: center;
+  color: var(--error);
+  font-size: 0.85rem;
+  margin-top: 0.75rem;
+  font-weight: 500;
 }

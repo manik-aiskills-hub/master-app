@@ -117,9 +117,14 @@ export default function ChapterPage() {
         <span className="word-counter">{current + 1}/{words.length}</span>
       </div>
 
-      <Link href={`/verbs/${slug}`} className="btn btn--primary verb-link">
-        Practice Verbs
-      </Link>
+      <div className="chapter-links">
+        <Link href={`/verbs/${slug}`} className="btn btn--primary">
+          Practice Verbs
+        </Link>
+        <Link href={`/grammar/${slug}`} className="btn btn--primary">
+          Grammar
+        </Link>
+      </div>
 
       <div className="mode-selector">
         {(["flashcard", "typing", "mcq"] as Mode[]).map((m) => (

@@ -555,8 +555,144 @@ async function main() {
     }
   }
 
+  // Seed grammar rules and exercises
+  console.log("\nSeeding grammar rules and exercises...");
+  const grammarData: Record<string, { titleDe: string; titleEn: string; formula: string; explDe: string; explEn: string; ex1De: string; ex1En: string; ex2De: string; ex2En: string; exercises: { type: string; promptDe: string; promptEn: string | null; answer: string; hint: string | null }[] }[]> = {
+    "sich-vorstellen": [{
+      titleDe: "Verben im Präsens", titleEn: "Present Tense Verbs",
+      formula: "Subjekt + Verb (konjugiert) + Rest",
+      explDe: "Im Deutschen steht das konjugierte Verb immer an zweiter Stelle im Hauptsatz.",
+      explEn: "In German, the conjugated verb always goes in the second position of the main clause.",
+      ex1De: "Ich komme aus Indien.", ex1En: "I come from India.",
+      ex2De: "Er arbeitet bei Siemens.", ex2En: "He works at Siemens.",
+      exercises: [
+        { type: "fill_in", promptDe: "Ich ___ aus Deutschland. (kommen)", promptEn: "I come from Germany.", answer: "komme", hint: "ich + kommen = ?" },
+        { type: "fill_in", promptDe: "Er ___ Deutsch. (sprechen)", promptEn: "He speaks German.", answer: "spricht", hint: "er + sprechen = ?" },
+        { type: "fill_in", promptDe: "Wir ___ in Berlin. (wohnen)", promptEn: "We live in Berlin.", answer: "wohnen", hint: "wir + wohnen = ?" },
+        { type: "write", promptDe: "Schreiben Sie: 'Ich heiße Maria.'", promptEn: "Write: I am called Maria.", answer: "Ich heiße Maria.", hint: null },
+        { type: "write", promptDe: "Schreiben Sie: 'Sie arbeitet als Lehrerin.'", promptEn: "Write: She works as a teacher.", answer: "Sie arbeitet als Lehrerin.", hint: null },
+      ],
+    }],
+    "familie-und-freunde": [{
+      titleDe: "Possessivpronomen", titleEn: "Possessive Pronouns",
+      formula: "Possessivpronomen + Nomen",
+      explDe: "Possessivpronomen zeigen Besitz an: mein, dein, sein, ihr, unser, euer, ihr.",
+      explEn: "Possessive pronouns show ownership: my, your, his, her, our, your (pl.), their.",
+      ex1De: "Mein Bruder heißt Thomas.", ex1En: "My brother is called Thomas.",
+      ex2De: "Ihre Schwester wohnt in München.", ex2En: "Her sister lives in Munich.",
+      exercises: [
+        { type: "fill_in", promptDe: "___ Mutter ist Ärztin. (ich)", promptEn: "My mother is a doctor.", answer: "Meine", hint: "ich → mein/meine" },
+        { type: "fill_in", promptDe: "___ Vater arbeitet viel. (er)", promptEn: "His father works a lot.", answer: "Sein", hint: "er → sein" },
+        { type: "fill_in", promptDe: "___ Kinder gehen zur Schule. (wir)", promptEn: "Our children go to school.", answer: "Unsere", hint: "wir → unser/unsere" },
+        { type: "write", promptDe: "Schreiben Sie: 'Mein Freund kommt aus der Türkei.'", promptEn: null, answer: "Mein Freund kommt aus der Türkei.", hint: null },
+        { type: "write", promptDe: "Schreiben Sie: 'Ihre Familie ist sehr groß.'", promptEn: null, answer: "Ihre Familie ist sehr groß.", hint: null },
+      ],
+    }],
+    "wohnen": [{
+      titleDe: "Akkusativ mit bestimmtem Artikel", titleEn: "Accusative with Definite Article",
+      formula: "der → den | die → die | das → das",
+      explDe: "Im Akkusativ ändert sich nur der maskuline Artikel: der wird zu den.",
+      explEn: "In the accusative case, only the masculine article changes: der becomes den.",
+      ex1De: "Ich sehe den Tisch.", ex1En: "I see the table.",
+      ex2De: "Sie kauft die Lampe.", ex2En: "She buys the lamp.",
+      exercises: [
+        { type: "fill_in", promptDe: "Ich kaufe ___ Schrank. (der)", promptEn: "I buy the closet.", answer: "den", hint: "der → den (Akkusativ)" },
+        { type: "fill_in", promptDe: "Er öffnet ___ Fenster. (das)", promptEn: "He opens the window.", answer: "das", hint: "das bleibt das" },
+        { type: "fill_in", promptDe: "Wir brauchen ___ Tür. (die)", promptEn: "We need the door.", answer: "die", hint: "die bleibt die" },
+        { type: "write", promptDe: "Schreiben Sie: 'Ich sehe den Balkon.'", promptEn: null, answer: "Ich sehe den Balkon.", hint: null },
+        { type: "write", promptDe: "Schreiben Sie: 'Sie hat das Zimmer.'", promptEn: null, answer: "Sie hat das Zimmer.", hint: null },
+      ],
+    }],
+    "essen-und-trinken": [{
+      titleDe: "Modalverben: möchten", titleEn: "Modal Verbs: would like",
+      formula: "Subjekt + möchte(n) + ... + Infinitiv",
+      explDe: "Möchten drückt einen Wunsch aus. Das zweite Verb steht am Satzende im Infinitiv.",
+      explEn: "'Möchten' expresses a wish. The second verb goes at the end in infinitive form.",
+      ex1De: "Ich möchte einen Kaffee trinken.", ex1En: "I would like to drink a coffee.",
+      ex2De: "Er möchte Kuchen bestellen.", ex2En: "He would like to order cake.",
+      exercises: [
+        { type: "fill_in", promptDe: "Ich ___ ein Wasser trinken. (möchten)", promptEn: null, answer: "möchte", hint: "ich → möchte" },
+        { type: "fill_in", promptDe: "Wir ___ Suppe bestellen. (möchten)", promptEn: null, answer: "möchten", hint: "wir → möchten" },
+        { type: "fill_in", promptDe: "Er ___ Reis essen. (möchten)", promptEn: null, answer: "möchte", hint: "er → möchte" },
+        { type: "write", promptDe: "Schreiben Sie: 'Ich möchte einen Tee trinken.'", promptEn: null, answer: "Ich möchte einen Tee trinken.", hint: null },
+        { type: "write", promptDe: "Schreiben Sie: 'Sie möchte Salat bestellen.'", promptEn: null, answer: "Sie möchte Salat bestellen.", hint: null },
+      ],
+    }],
+    "einkaufen": [{
+      titleDe: "Komparativ und Superlativ", titleEn: "Comparative and Superlative",
+      formula: "Adj + -er (Komparativ) | am + Adj + -sten (Superlativ)",
+      explDe: "Zum Vergleichen: billig → billiger → am billigsten. Einsilbige Adjektive bekommen oft einen Umlaut.",
+      explEn: "For comparing: cheap → cheaper → cheapest. One-syllable adjectives often get an umlaut.",
+      ex1De: "Das Hemd ist billiger als die Jacke.", ex1En: "The shirt is cheaper than the jacket.",
+      ex2De: "Die Schuhe sind am teuersten.", ex2En: "The shoes are the most expensive.",
+      exercises: [
+        { type: "fill_in", promptDe: "Das Kleid ist ___ als die Hose. (teuer)", promptEn: null, answer: "teurer", hint: "teuer → teurer" },
+        { type: "fill_in", promptDe: "Der Markt ist am ___. (billig)", promptEn: null, answer: "billigsten", hint: "billig → am billigsten" },
+        { type: "fill_in", promptDe: "Diese Tasche ist ___ als jene. (groß)", promptEn: null, answer: "größer", hint: "groß → größer" },
+        { type: "write", promptDe: "Schreiben Sie: 'Das Hemd ist billiger als die Jacke.'", promptEn: null, answer: "Das Hemd ist billiger als die Jacke.", hint: null },
+        { type: "write", promptDe: "Schreiben Sie: 'Die Schuhe sind am teuersten.'", promptEn: null, answer: "Die Schuhe sind am teuersten.", hint: null },
+      ],
+    }],
+    "gesundheit": [{
+      titleDe: "Imperativ", titleEn: "Imperative",
+      formula: "du: Stamm(+e) | ihr: Stamm+t | Sie: Verb+en Sie",
+      explDe: "Der Imperativ gibt Anweisungen. Bei 'du' fällt das Pronomen weg.",
+      explEn: "The imperative gives commands. With 'du', the pronoun is dropped.",
+      ex1De: "Nehmen Sie die Tabletten!", ex1En: "Take the tablets!",
+      ex2De: "Trink viel Wasser!", ex2En: "Drink lots of water!",
+      exercises: [
+        { type: "fill_in", promptDe: "___ Sie bitte Platz! (nehmen)", promptEn: null, answer: "Nehmen", hint: "Sie-Form: Verb + Sie" },
+        { type: "fill_in", promptDe: "___ zum Arzt! (gehen, du)", promptEn: null, answer: "Geh", hint: "du-Form: Stamm" },
+        { type: "fill_in", promptDe: "___ Sie die Medizin! (nehmen)", promptEn: null, answer: "Nehmen", hint: "Sie-Form" },
+        { type: "write", promptDe: "Schreiben Sie: 'Trinken Sie viel Wasser!'", promptEn: null, answer: "Trinken Sie viel Wasser!", hint: null },
+        { type: "write", promptDe: "Schreiben Sie: 'Ruf den Arzt an!'", promptEn: null, answer: "Ruf den Arzt an!", hint: null },
+      ],
+    }],
+  };
+
+  let totalRules = 0;
+  let totalExercises = 0;
+
+  for (const ch of chapters) {
+    const chapter = await prisma.chapter.findUnique({ where: { slug: ch.slug } });
+    if (!chapter) continue;
+
+    const rules = grammarData[ch.slug];
+    if (!rules) continue;
+
+    for (const rule of rules) {
+      const existing = await prisma.grammarRule.findFirst({
+        where: { titleDe: rule.titleDe, chapterId: chapter.id },
+      });
+      if (existing) continue;
+
+      const created = await prisma.grammarRule.create({
+        data: {
+          titleDe: rule.titleDe, titleEn: rule.titleEn, formula: rule.formula,
+          explanationDe: rule.explDe, explanationEn: rule.explEn,
+          example1De: rule.ex1De, example1En: rule.ex1En,
+          example2De: rule.ex2De, example2En: rule.ex2En,
+          chapterId: chapter.id,
+        },
+      });
+      totalRules++;
+
+      for (const ex of rule.exercises) {
+        await prisma.sentenceExercise.create({
+          data: {
+            type: ex.type, promptDe: ex.promptDe, promptEn: ex.promptEn,
+            answer: ex.answer, hint: ex.hint, grammarRuleId: created.id,
+          },
+        });
+        totalExercises++;
+      }
+    }
+  }
+
+  console.log(`  Grammar: ${totalRules} rules, ${totalExercises} exercises`);
+
   const totalVerbs = Object.values(chapterVerbs).reduce((sum, v) => sum + v.length, 0);
-  console.log(`Seeding complete: 30 chapters, 600 words, ${totalVerbs} verbs.`);
+  console.log(`\nSeeding complete: 30 chapters, 600 words, ${totalVerbs} verbs, ${totalRules} grammar rules, ${totalExercises} exercises.`);
 }
 
 main()
