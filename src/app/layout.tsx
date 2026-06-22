@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { SettingsProvider } from "@/lib/settings-context";
+import BottomNav from "@/components/BottomNav";
 
 export const metadata: Metadata = {
   title: "German B1 Planner",
@@ -21,7 +23,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <SettingsProvider>
+          {children}
+          <BottomNav />
+        </SettingsProvider>
+      </body>
     </html>
   );
 }
