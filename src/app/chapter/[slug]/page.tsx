@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import { useSettings } from "@/lib/settings-context";
 import { t } from "@/lib/i18n";
 import { checkAnswer, generateMCQOptions, calculateAccuracy, type WordItem } from "@/lib/word-engine";
@@ -115,6 +116,10 @@ export default function ChapterPage() {
         <h2>{language === "de" ? chapter.titleDe : chapter.titleEn}</h2>
         <span className="word-counter">{current + 1}/{words.length}</span>
       </div>
+
+      <Link href={`/verbs/${slug}`} className="btn btn--primary verb-link">
+        Practice Verbs
+      </Link>
 
       <div className="mode-selector">
         {(["flashcard", "typing", "mcq"] as Mode[]).map((m) => (

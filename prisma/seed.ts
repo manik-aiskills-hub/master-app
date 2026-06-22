@@ -365,6 +365,146 @@ const chapters = [
   ]},
 ];
 
+interface VerbSeed {
+  inf: string; en: string; aux: string; pp: string; pret: string | null; irreg: boolean;
+  ich: string; du: string; er: string; wir: string; ihr: string; sie: string;
+}
+
+const chapterVerbs: Record<string, VerbSeed[]> = {
+  "sich-vorstellen": [
+    { inf: "heißen", en: "to be called", aux: "haben", pp: "geheißen", pret: "hieß", irreg: true, ich: "heiße", du: "heißt", er: "heißt", wir: "heißen", ihr: "heißt", sie: "heißen" },
+    { inf: "kommen", en: "to come", aux: "sein", pp: "gekommen", pret: "kam", irreg: true, ich: "komme", du: "kommst", er: "kommt", wir: "kommen", ihr: "kommt", sie: "kommen" },
+    { inf: "wohnen", en: "to live", aux: "haben", pp: "gewohnt", pret: "wohnte", irreg: false, ich: "wohne", du: "wohnst", er: "wohnt", wir: "wohnen", ihr: "wohnt", sie: "wohnen" },
+    { inf: "sprechen", en: "to speak", aux: "haben", pp: "gesprochen", pret: "sprach", irreg: true, ich: "spreche", du: "sprichst", er: "spricht", wir: "sprechen", ihr: "sprecht", sie: "sprechen" },
+    { inf: "arbeiten", en: "to work", aux: "haben", pp: "gearbeitet", pret: "arbeitete", irreg: false, ich: "arbeite", du: "arbeitest", er: "arbeitet", wir: "arbeiten", ihr: "arbeitet", sie: "arbeiten" },
+    { inf: "lernen", en: "to learn", aux: "haben", pp: "gelernt", pret: "lernte", irreg: false, ich: "lerne", du: "lernst", er: "lernt", wir: "lernen", ihr: "lernt", sie: "lernen" },
+    { inf: "sein", en: "to be", aux: "sein", pp: "gewesen", pret: "war", irreg: true, ich: "bin", du: "bist", er: "ist", wir: "sind", ihr: "seid", sie: "sind" },
+    { inf: "haben", en: "to have", aux: "haben", pp: "gehabt", pret: "hatte", irreg: true, ich: "habe", du: "hast", er: "hat", wir: "haben", ihr: "habt", sie: "haben" },
+    { inf: "machen", en: "to make/do", aux: "haben", pp: "gemacht", pret: "machte", irreg: false, ich: "mache", du: "machst", er: "macht", wir: "machen", ihr: "macht", sie: "machen" },
+    { inf: "kennen", en: "to know", aux: "haben", pp: "gekannt", pret: "kannte", irreg: true, ich: "kenne", du: "kennst", er: "kennt", wir: "kennen", ihr: "kennt", sie: "kennen" },
+  ],
+  "familie-und-freunde": [
+    { inf: "lieben", en: "to love", aux: "haben", pp: "geliebt", pret: "liebte", irreg: false, ich: "liebe", du: "liebst", er: "liebt", wir: "lieben", ihr: "liebt", sie: "lieben" },
+    { inf: "besuchen", en: "to visit", aux: "haben", pp: "besucht", pret: "besuchte", irreg: false, ich: "besuche", du: "besuchst", er: "besucht", wir: "besuchen", ihr: "besucht", sie: "besuchen" },
+    { inf: "heiraten", en: "to marry", aux: "haben", pp: "geheiratet", pret: "heiratete", irreg: false, ich: "heirate", du: "heiratest", er: "heiratet", wir: "heiraten", ihr: "heiratet", sie: "heiraten" },
+    { inf: "spielen", en: "to play", aux: "haben", pp: "gespielt", pret: "spielte", irreg: false, ich: "spiele", du: "spielst", er: "spielt", wir: "spielen", ihr: "spielt", sie: "spielen" },
+    { inf: "erzählen", en: "to tell", aux: "haben", pp: "erzählt", pret: "erzählte", irreg: false, ich: "erzähle", du: "erzählst", er: "erzählt", wir: "erzählen", ihr: "erzählt", sie: "erzählen" },
+    { inf: "helfen", en: "to help", aux: "haben", pp: "geholfen", pret: "half", irreg: true, ich: "helfe", du: "hilfst", er: "hilft", wir: "helfen", ihr: "helft", sie: "helfen" },
+    { inf: "treffen", en: "to meet", aux: "haben", pp: "getroffen", pret: "traf", irreg: true, ich: "treffe", du: "triffst", er: "trifft", wir: "treffen", ihr: "trefft", sie: "treffen" },
+    { inf: "einladen", en: "to invite", aux: "haben", pp: "eingeladen", pret: "lud ein", irreg: true, ich: "lade ein", du: "lädst ein", er: "lädt ein", wir: "laden ein", ihr: "ladet ein", sie: "laden ein" },
+    { inf: "verstehen", en: "to understand", aux: "haben", pp: "verstanden", pret: "verstand", irreg: true, ich: "verstehe", du: "verstehst", er: "versteht", wir: "verstehen", ihr: "versteht", sie: "verstehen" },
+    { inf: "streiten", en: "to argue", aux: "haben", pp: "gestritten", pret: "stritt", irreg: true, ich: "streite", du: "streitest", er: "streitet", wir: "streiten", ihr: "streitet", sie: "streiten" },
+  ],
+  "wohnen": [
+    { inf: "mieten", en: "to rent", aux: "haben", pp: "gemietet", pret: "mietete", irreg: false, ich: "miete", du: "mietest", er: "mietet", wir: "mieten", ihr: "mietet", sie: "mieten" },
+    { inf: "umziehen", en: "to move", aux: "sein", pp: "umgezogen", pret: "zog um", irreg: true, ich: "ziehe um", du: "ziehst um", er: "zieht um", wir: "ziehen um", ihr: "zieht um", sie: "ziehen um" },
+    { inf: "putzen", en: "to clean", aux: "haben", pp: "geputzt", pret: "putzte", irreg: false, ich: "putze", du: "putzt", er: "putzt", wir: "putzen", ihr: "putzt", sie: "putzen" },
+    { inf: "kochen", en: "to cook", aux: "haben", pp: "gekocht", pret: "kochte", irreg: false, ich: "koche", du: "kochst", er: "kocht", wir: "kochen", ihr: "kocht", sie: "kochen" },
+    { inf: "schlafen", en: "to sleep", aux: "haben", pp: "geschlafen", pret: "schlief", irreg: true, ich: "schlafe", du: "schläfst", er: "schläft", wir: "schlafen", ihr: "schlaft", sie: "schlafen" },
+    { inf: "aufräumen", en: "to tidy up", aux: "haben", pp: "aufgeräumt", pret: "räumte auf", irreg: false, ich: "räume auf", du: "räumst auf", er: "räumt auf", wir: "räumen auf", ihr: "räumt auf", sie: "räumen auf" },
+    { inf: "einrichten", en: "to furnish", aux: "haben", pp: "eingerichtet", pret: "richtete ein", irreg: false, ich: "richte ein", du: "richtest ein", er: "richtet ein", wir: "richten ein", ihr: "richtet ein", sie: "richten ein" },
+    { inf: "renovieren", en: "to renovate", aux: "haben", pp: "renoviert", pret: "renovierte", irreg: false, ich: "renoviere", du: "renovierst", er: "renoviert", wir: "renovieren", ihr: "renoviert", sie: "renovieren" },
+    { inf: "öffnen", en: "to open", aux: "haben", pp: "geöffnet", pret: "öffnete", irreg: false, ich: "öffne", du: "öffnest", er: "öffnet", wir: "öffnen", ihr: "öffnet", sie: "öffnen" },
+    { inf: "schließen", en: "to close", aux: "haben", pp: "geschlossen", pret: "schloss", irreg: true, ich: "schließe", du: "schließt", er: "schließt", wir: "schließen", ihr: "schließt", sie: "schließen" },
+  ],
+  "essen-und-trinken": [
+    { inf: "essen", en: "to eat", aux: "haben", pp: "gegessen", pret: "aß", irreg: true, ich: "esse", du: "isst", er: "isst", wir: "essen", ihr: "esst", sie: "essen" },
+    { inf: "trinken", en: "to drink", aux: "haben", pp: "getrunken", pret: "trank", irreg: true, ich: "trinke", du: "trinkst", er: "trinkt", wir: "trinken", ihr: "trinkt", sie: "trinken" },
+    { inf: "bestellen", en: "to order", aux: "haben", pp: "bestellt", pret: "bestellte", irreg: false, ich: "bestelle", du: "bestellst", er: "bestellt", wir: "bestellen", ihr: "bestellt", sie: "bestellen" },
+    { inf: "schmecken", en: "to taste", aux: "haben", pp: "geschmeckt", pret: "schmeckte", irreg: false, ich: "schmecke", du: "schmeckst", er: "schmeckt", wir: "schmecken", ihr: "schmeckt", sie: "schmecken" },
+    { inf: "backen", en: "to bake", aux: "haben", pp: "gebacken", pret: "backte", irreg: true, ich: "backe", du: "bäckst", er: "bäckt", wir: "backen", ihr: "backt", sie: "backen" },
+    { inf: "schneiden", en: "to cut", aux: "haben", pp: "geschnitten", pret: "schnitt", irreg: true, ich: "schneide", du: "schneidest", er: "schneidet", wir: "schneiden", ihr: "schneidet", sie: "schneiden" },
+    { inf: "nehmen", en: "to take", aux: "haben", pp: "genommen", pret: "nahm", irreg: true, ich: "nehme", du: "nimmst", er: "nimmt", wir: "nehmen", ihr: "nehmt", sie: "nehmen" },
+    { inf: "brauchen", en: "to need", aux: "haben", pp: "gebraucht", pret: "brauchte", irreg: false, ich: "brauche", du: "brauchst", er: "braucht", wir: "brauchen", ihr: "braucht", sie: "brauchen" },
+    { inf: "mögen", en: "to like", aux: "haben", pp: "gemocht", pret: "mochte", irreg: true, ich: "mag", du: "magst", er: "mag", wir: "mögen", ihr: "mögt", sie: "mögen" },
+    { inf: "probieren", en: "to try/taste", aux: "haben", pp: "probiert", pret: "probierte", irreg: false, ich: "probiere", du: "probierst", er: "probiert", wir: "probieren", ihr: "probiert", sie: "probieren" },
+  ],
+  "einkaufen": [
+    { inf: "kaufen", en: "to buy", aux: "haben", pp: "gekauft", pret: "kaufte", irreg: false, ich: "kaufe", du: "kaufst", er: "kauft", wir: "kaufen", ihr: "kauft", sie: "kaufen" },
+    { inf: "verkaufen", en: "to sell", aux: "haben", pp: "verkauft", pret: "verkaufte", irreg: false, ich: "verkaufe", du: "verkaufst", er: "verkauft", wir: "verkaufen", ihr: "verkauft", sie: "verkaufen" },
+    { inf: "bezahlen", en: "to pay", aux: "haben", pp: "bezahlt", pret: "bezahlte", irreg: false, ich: "bezahle", du: "bezahlst", er: "bezahlt", wir: "bezahlen", ihr: "bezahlt", sie: "bezahlen" },
+    { inf: "kosten", en: "to cost", aux: "haben", pp: "gekostet", pret: "kostete", irreg: false, ich: "koste", du: "kostest", er: "kostet", wir: "kosten", ihr: "kostet", sie: "kosten" },
+    { inf: "suchen", en: "to search", aux: "haben", pp: "gesucht", pret: "suchte", irreg: false, ich: "suche", du: "suchst", er: "sucht", wir: "suchen", ihr: "sucht", sie: "suchen" },
+    { inf: "finden", en: "to find", aux: "haben", pp: "gefunden", pret: "fand", irreg: true, ich: "finde", du: "findest", er: "findet", wir: "finden", ihr: "findet", sie: "finden" },
+    { inf: "tragen", en: "to wear/carry", aux: "haben", pp: "getragen", pret: "trug", irreg: true, ich: "trage", du: "trägst", er: "trägt", wir: "tragen", ihr: "tragt", sie: "tragen" },
+    { inf: "anprobieren", en: "to try on", aux: "haben", pp: "anprobiert", pret: "probierte an", irreg: false, ich: "probiere an", du: "probierst an", er: "probiert an", wir: "probieren an", ihr: "probiert an", sie: "probieren an" },
+    { inf: "umtauschen", en: "to exchange", aux: "haben", pp: "umgetauscht", pret: "tauschte um", irreg: false, ich: "tausche um", du: "tauschst um", er: "tauscht um", wir: "tauschen um", ihr: "tauscht um", sie: "tauschen um" },
+    { inf: "sparen", en: "to save", aux: "haben", pp: "gespart", pret: "sparte", irreg: false, ich: "spare", du: "sparst", er: "spart", wir: "sparen", ihr: "spart", sie: "sparen" },
+  ],
+  "gesundheit": [
+    { inf: "fühlen", en: "to feel", aux: "haben", pp: "gefühlt", pret: "fühlte", irreg: false, ich: "fühle", du: "fühlst", er: "fühlt", wir: "fühlen", ihr: "fühlt", sie: "fühlen" },
+    { inf: "untersuchen", en: "to examine", aux: "haben", pp: "untersucht", pret: "untersuchte", irreg: false, ich: "untersuche", du: "untersuchst", er: "untersucht", wir: "untersuchen", ihr: "untersucht", sie: "untersuchen" },
+    { inf: "verschreiben", en: "to prescribe", aux: "haben", pp: "verschrieben", pret: "verschrieb", irreg: true, ich: "verschreibe", du: "verschreibst", er: "verschreibt", wir: "verschreiben", ihr: "verschreibt", sie: "verschreiben" },
+    { inf: "husten", en: "to cough", aux: "haben", pp: "gehustet", pret: "hustete", irreg: false, ich: "huste", du: "hustest", er: "hustet", wir: "husten", ihr: "hustet", sie: "husten" },
+    { inf: "wehtun", en: "to hurt", aux: "haben", pp: "wehgetan", pret: "tat weh", irreg: true, ich: "tue weh", du: "tust weh", er: "tut weh", wir: "tun weh", ihr: "tut weh", sie: "tun weh" },
+    { inf: "erholen", en: "to recover", aux: "haben", pp: "erholt", pret: "erholte", irreg: false, ich: "erhole", du: "erholst", er: "erholt", wir: "erholen", ihr: "erholt", sie: "erholen" },
+    { inf: "rauchen", en: "to smoke", aux: "haben", pp: "geraucht", pret: "rauchte", irreg: false, ich: "rauche", du: "rauchst", er: "raucht", wir: "rauchen", ihr: "raucht", sie: "rauchen" },
+    { inf: "abnehmen", en: "to lose weight", aux: "haben", pp: "abgenommen", pret: "nahm ab", irreg: true, ich: "nehme ab", du: "nimmst ab", er: "nimmt ab", wir: "nehmen ab", ihr: "nehmt ab", sie: "nehmen ab" },
+    { inf: "operieren", en: "to operate", aux: "haben", pp: "operiert", pret: "operierte", irreg: false, ich: "operiere", du: "operierst", er: "operiert", wir: "operieren", ihr: "operiert", sie: "operieren" },
+    { inf: "impfen", en: "to vaccinate", aux: "haben", pp: "geimpft", pret: "impfte", irreg: false, ich: "impfe", du: "impfst", er: "impft", wir: "impfen", ihr: "impft", sie: "impfen" },
+  ],
+  "arbeit-und-beruf": [
+    { inf: "arbeiten", en: "to work", aux: "haben", pp: "gearbeitet", pret: "arbeitete", irreg: false, ich: "arbeite", du: "arbeitest", er: "arbeitet", wir: "arbeiten", ihr: "arbeitet", sie: "arbeiten" },
+    { inf: "verdienen", en: "to earn", aux: "haben", pp: "verdient", pret: "verdiente", irreg: false, ich: "verdiene", du: "verdienst", er: "verdient", wir: "verdienen", ihr: "verdient", sie: "verdienen" },
+    { inf: "bewerben", en: "to apply", aux: "haben", pp: "beworben", pret: "bewarb", irreg: true, ich: "bewerbe", du: "bewirbst", er: "bewirbt", wir: "bewerben", ihr: "bewerbt", sie: "bewerben" },
+    { inf: "kündigen", en: "to quit", aux: "haben", pp: "gekündigt", pret: "kündigte", irreg: false, ich: "kündige", du: "kündigst", er: "kündigt", wir: "kündigen", ihr: "kündigt", sie: "kündigen" },
+    { inf: "leiten", en: "to lead", aux: "haben", pp: "geleitet", pret: "leitete", irreg: false, ich: "leite", du: "leitest", er: "leitet", wir: "leiten", ihr: "leitet", sie: "leiten" },
+    { inf: "erledigen", en: "to complete", aux: "haben", pp: "erledigt", pret: "erledigte", irreg: false, ich: "erledige", du: "erledigst", er: "erledigt", wir: "erledigen", ihr: "erledigt", sie: "erledigen" },
+    { inf: "telefonieren", en: "to phone", aux: "haben", pp: "telefoniert", pret: "telefonierte", irreg: false, ich: "telefoniere", du: "telefonierst", er: "telefoniert", wir: "telefonieren", ihr: "telefoniert", sie: "telefonieren" },
+    { inf: "vorstellen", en: "to introduce", aux: "haben", pp: "vorgestellt", pret: "stellte vor", irreg: false, ich: "stelle vor", du: "stellst vor", er: "stellt vor", wir: "stellen vor", ihr: "stellt vor", sie: "stellen vor" },
+    { inf: "unterschreiben", en: "to sign", aux: "haben", pp: "unterschrieben", pret: "unterschrieb", irreg: true, ich: "unterschreibe", du: "unterschreibst", er: "unterschreibt", wir: "unterschreiben", ihr: "unterschreibt", sie: "unterschreiben" },
+    { inf: "vereinbaren", en: "to arrange", aux: "haben", pp: "vereinbart", pret: "vereinbarte", irreg: false, ich: "vereinbare", du: "vereinbarst", er: "vereinbart", wir: "vereinbaren", ihr: "vereinbart", sie: "vereinbaren" },
+  ],
+  "schule-und-bildung": [
+    { inf: "studieren", en: "to study", aux: "haben", pp: "studiert", pret: "studierte", irreg: false, ich: "studiere", du: "studierst", er: "studiert", wir: "studieren", ihr: "studiert", sie: "studieren" },
+    { inf: "lesen", en: "to read", aux: "haben", pp: "gelesen", pret: "las", irreg: true, ich: "lese", du: "liest", er: "liest", wir: "lesen", ihr: "lest", sie: "lesen" },
+    { inf: "schreiben", en: "to write", aux: "haben", pp: "geschrieben", pret: "schrieb", irreg: true, ich: "schreibe", du: "schreibst", er: "schreibt", wir: "schreiben", ihr: "schreibt", sie: "schreiben" },
+    { inf: "üben", en: "to practice", aux: "haben", pp: "geübt", pret: "übte", irreg: false, ich: "übe", du: "übst", er: "übt", wir: "üben", ihr: "übt", sie: "üben" },
+    { inf: "erklären", en: "to explain", aux: "haben", pp: "erklärt", pret: "erklärte", irreg: false, ich: "erkläre", du: "erklärst", er: "erklärt", wir: "erklären", ihr: "erklärt", sie: "erklären" },
+    { inf: "bestehen", en: "to pass (exam)", aux: "haben", pp: "bestanden", pret: "bestand", irreg: true, ich: "bestehe", du: "bestehst", er: "besteht", wir: "bestehen", ihr: "besteht", sie: "bestehen" },
+    { inf: "wiederholen", en: "to repeat", aux: "haben", pp: "wiederholt", pret: "wiederholte", irreg: false, ich: "wiederhole", du: "wiederholst", er: "wiederholt", wir: "wiederholen", ihr: "wiederholt", sie: "wiederholen" },
+    { inf: "unterrichten", en: "to teach", aux: "haben", pp: "unterrichtet", pret: "unterrichtete", irreg: false, ich: "unterrichte", du: "unterrichtest", er: "unterrichtet", wir: "unterrichten", ihr: "unterrichtet", sie: "unterrichten" },
+    { inf: "vorbereiten", en: "to prepare", aux: "haben", pp: "vorbereitet", pret: "bereitete vor", irreg: false, ich: "bereite vor", du: "bereitest vor", er: "bereitet vor", wir: "bereiten vor", ihr: "bereitet vor", sie: "bereiten vor" },
+    { inf: "merken", en: "to remember", aux: "haben", pp: "gemerkt", pret: "merkte", irreg: false, ich: "merke", du: "merkst", er: "merkt", wir: "merken", ihr: "merkt", sie: "merken" },
+  ],
+  "freizeit": [
+    { inf: "schwimmen", en: "to swim", aux: "sein", pp: "geschwommen", pret: "schwamm", irreg: true, ich: "schwimme", du: "schwimmst", er: "schwimmt", wir: "schwimmen", ihr: "schwimmt", sie: "schwimmen" },
+    { inf: "laufen", en: "to run", aux: "sein", pp: "gelaufen", pret: "lief", irreg: true, ich: "laufe", du: "läufst", er: "läuft", wir: "laufen", ihr: "lauft", sie: "laufen" },
+    { inf: "singen", en: "to sing", aux: "haben", pp: "gesungen", pret: "sang", irreg: true, ich: "singe", du: "singst", er: "singt", wir: "singen", ihr: "singt", sie: "singen" },
+    { inf: "tanzen", en: "to dance", aux: "haben", pp: "getanzt", pret: "tanzte", irreg: false, ich: "tanze", du: "tanzt", er: "tanzt", wir: "tanzen", ihr: "tanzt", sie: "tanzen" },
+    { inf: "wandern", en: "to hike", aux: "sein", pp: "gewandert", pret: "wanderte", irreg: false, ich: "wandere", du: "wanderst", er: "wandert", wir: "wandern", ihr: "wandert", sie: "wandern" },
+    { inf: "fotografieren", en: "to photograph", aux: "haben", pp: "fotografiert", pret: "fotografierte", irreg: false, ich: "fotografiere", du: "fotografierst", er: "fotografiert", wir: "fotografieren", ihr: "fotografiert", sie: "fotografieren" },
+    { inf: "malen", en: "to paint", aux: "haben", pp: "gemalt", pret: "malte", irreg: false, ich: "male", du: "malst", er: "malt", wir: "malen", ihr: "malt", sie: "malen" },
+    { inf: "fernsehen", en: "to watch TV", aux: "haben", pp: "ferngesehen", pret: "sah fern", irreg: true, ich: "sehe fern", du: "siehst fern", er: "sieht fern", wir: "sehen fern", ihr: "seht fern", sie: "sehen fern" },
+    { inf: "entspannen", en: "to relax", aux: "haben", pp: "entspannt", pret: "entspannte", irreg: false, ich: "entspanne", du: "entspannst", er: "entspannt", wir: "entspannen", ihr: "entspannt", sie: "entspannen" },
+    { inf: "genießen", en: "to enjoy", aux: "haben", pp: "genossen", pret: "genoss", irreg: true, ich: "genieße", du: "genießt", er: "genießt", wir: "genießen", ihr: "genießt", sie: "genießen" },
+  ],
+  "reisen": [
+    { inf: "reisen", en: "to travel", aux: "sein", pp: "gereist", pret: "reiste", irreg: false, ich: "reise", du: "reist", er: "reist", wir: "reisen", ihr: "reist", sie: "reisen" },
+    { inf: "fliegen", en: "to fly", aux: "sein", pp: "geflogen", pret: "flog", irreg: true, ich: "fliege", du: "fliegst", er: "fliegt", wir: "fliegen", ihr: "fliegt", sie: "fliegen" },
+    { inf: "fahren", en: "to drive", aux: "sein", pp: "gefahren", pret: "fuhr", irreg: true, ich: "fahre", du: "fährst", er: "fährt", wir: "fahren", ihr: "fahrt", sie: "fahren" },
+    { inf: "buchen", en: "to book", aux: "haben", pp: "gebucht", pret: "buchte", irreg: false, ich: "buche", du: "buchst", er: "bucht", wir: "buchen", ihr: "bucht", sie: "buchen" },
+    { inf: "packen", en: "to pack", aux: "haben", pp: "gepackt", pret: "packte", irreg: false, ich: "packe", du: "packst", er: "packt", wir: "packen", ihr: "packt", sie: "packen" },
+    { inf: "ankommen", en: "to arrive", aux: "sein", pp: "angekommen", pret: "kam an", irreg: true, ich: "komme an", du: "kommst an", er: "kommt an", wir: "kommen an", ihr: "kommt an", sie: "kommen an" },
+    { inf: "abfahren", en: "to depart", aux: "sein", pp: "abgefahren", pret: "fuhr ab", irreg: true, ich: "fahre ab", du: "fährst ab", er: "fährt ab", wir: "fahren ab", ihr: "fahrt ab", sie: "fahren ab" },
+    { inf: "übernachten", en: "to stay overnight", aux: "haben", pp: "übernachtet", pret: "übernachtete", irreg: false, ich: "übernachte", du: "übernachtest", er: "übernachtet", wir: "übernachten", ihr: "übernachtet", sie: "übernachten" },
+    { inf: "besichtigen", en: "to visit/tour", aux: "haben", pp: "besichtigt", pret: "besichtigte", irreg: false, ich: "besichtige", du: "besichtigst", er: "besichtigt", wir: "besichtigen", ihr: "besichtigt", sie: "besichtigen" },
+    { inf: "umsteigen", en: "to transfer", aux: "sein", pp: "umgestiegen", pret: "stieg um", irreg: true, ich: "steige um", du: "steigst um", er: "steigt um", wir: "steigen um", ihr: "steigt um", sie: "steigen um" },
+  ],
+  "verkehr": [
+    { inf: "fahren", en: "to drive", aux: "sein", pp: "gefahren", pret: "fuhr", irreg: true, ich: "fahre", du: "fährst", er: "fährt", wir: "fahren", ihr: "fahrt", sie: "fahren" },
+    { inf: "parken", en: "to park", aux: "haben", pp: "geparkt", pret: "parkte", irreg: false, ich: "parke", du: "parkst", er: "parkt", wir: "parken", ihr: "parkt", sie: "parken" },
+    { inf: "tanken", en: "to refuel", aux: "haben", pp: "getankt", pret: "tankte", irreg: false, ich: "tanke", du: "tankst", er: "tankt", wir: "tanken", ihr: "tankt", sie: "tanken" },
+    { inf: "bremsen", en: "to brake", aux: "haben", pp: "gebremst", pret: "bremste", irreg: false, ich: "bremse", du: "bremst", er: "bremst", wir: "bremsen", ihr: "bremst", sie: "bremsen" },
+    { inf: "abbiegen", en: "to turn", aux: "sein", pp: "abgebogen", pret: "bog ab", irreg: true, ich: "biege ab", du: "biegst ab", er: "biegt ab", wir: "biegen ab", ihr: "biegt ab", sie: "biegen ab" },
+    { inf: "einsteigen", en: "to board", aux: "sein", pp: "eingestiegen", pret: "stieg ein", irreg: true, ich: "steige ein", du: "steigst ein", er: "steigt ein", wir: "steigen ein", ihr: "steigt ein", sie: "steigen ein" },
+    { inf: "aussteigen", en: "to get off", aux: "sein", pp: "ausgestiegen", pret: "stieg aus", irreg: true, ich: "steige aus", du: "steigst aus", er: "steigt aus", wir: "steigen aus", ihr: "steigt aus", sie: "steigen aus" },
+    { inf: "halten", en: "to stop", aux: "haben", pp: "gehalten", pret: "hielt", irreg: true, ich: "halte", du: "hältst", er: "hält", wir: "halten", ihr: "haltet", sie: "halten" },
+    { inf: "überqueren", en: "to cross", aux: "haben", pp: "überquert", pret: "überquerte", irreg: false, ich: "überquere", du: "überquerst", er: "überquert", wir: "überqueren", ihr: "überquert", sie: "überqueren" },
+    { inf: "warten", en: "to wait", aux: "haben", pp: "gewartet", pret: "wartete", irreg: false, ich: "warte", du: "wartest", er: "wartet", wir: "warten", ihr: "wartet", sie: "warten" },
+  ],
+};
+
 async function main() {
   console.log("Seeding 30 chapters with 20 words each...");
 
@@ -391,10 +531,32 @@ async function main() {
       }
     }
 
-    console.log(`  Day ${ch.day}: ${ch.en} (${ch.words.length} words)`);
+    const verbs = chapterVerbs[ch.slug];
+    if (verbs) {
+      for (const v of verbs) {
+        const existing = await prisma.verb.findFirst({
+          where: { infinitive: v.inf, chapterId: chapter.id },
+        });
+        if (!existing) {
+          await prisma.verb.create({
+            data: {
+              infinitive: v.inf, english: v.en, auxiliary: v.aux,
+              partizipII: v.pp, praeteritum: v.pret, isIrregular: v.irreg,
+              ichPraesens: v.ich, duPraesens: v.du, erPraesens: v.er,
+              wirPraesens: v.wir, ihrPraesens: v.ihr, siePraesens: v.sie,
+              chapterId: chapter.id,
+            },
+          });
+        }
+      }
+      console.log(`  Day ${ch.day}: ${ch.en} (${ch.words.length} words, ${verbs.length} verbs)`);
+    } else {
+      console.log(`  Day ${ch.day}: ${ch.en} (${ch.words.length} words)`);
+    }
   }
 
-  console.log("Seeding complete: 30 chapters, 600 words.");
+  const totalVerbs = Object.values(chapterVerbs).reduce((sum, v) => sum + v.length, 0);
+  console.log(`Seeding complete: 30 chapters, 600 words, ${totalVerbs} verbs.`);
 }
 
 main()

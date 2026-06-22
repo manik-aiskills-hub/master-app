@@ -439,3 +439,101 @@ body {
   font-size: 1rem;
   color: var(--text-secondary);
 }
+
+/* Verb Link */
+.verb-link {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  margin-bottom: 1rem;
+}
+
+/* Verb Table Card */
+.verb-table-card, .verb-fill-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.verb-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.75rem;
+}
+
+.verb-infinitive {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.verb-english {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.verb-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.verb-badge {
+  background: var(--warning);
+  color: #fff;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.conj-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.conj-table tr { border-bottom: 1px solid var(--border); }
+.conj-table tr:last-child { border-bottom: none; }
+
+.conj-pronoun {
+  padding: 0.5rem;
+  font-weight: 600;
+  color: var(--accent);
+  width: 40%;
+}
+
+.conj-form {
+  padding: 0.5rem;
+}
+
+.verb-next {
+  width: 100%;
+}
+
+/* Verb Fill Drill */
+.fill-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.fill-pronoun {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.fill-blank {
+  font-size: 1.3rem;
+  color: var(--text-secondary);
+  border-bottom: 2px dashed var(--border);
+  padding: 0 1rem;
+}
