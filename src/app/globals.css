@@ -644,3 +644,54 @@ body {
   margin-top: 0.75rem;
   font-weight: 500;
 }
+
+/* Quiz */
+.quiz-setup {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.quiz-modes {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.quiz-info {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.quiz-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.quiz-item-type {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.quiz-question {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 1rem 0 1.5rem;
+}
+
+.score-grade {
+  font-size: 1.2rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.score-grade--excellent { color: var(--success); }
+.score-grade--good { color: var(--accent); }
+.score-grade--fair { color: var(--warning); }
+.score-grade--poor { color: var(--error); }
