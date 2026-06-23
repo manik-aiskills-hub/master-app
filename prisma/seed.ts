@@ -763,8 +763,270 @@ async function main() {
   }
   console.log(`  Reading: ${totalPassages} passages`);
 
+  // --- Listening Exercises ---
+  const listeningData: Record<number, { titleDe: string; titleEn: string; youtubeUrl: string; questions: { question: string; options: string[]; correctIndex: number }[] }[]> = {
+    1: [
+      {
+        titleDe: "Begrüßung und Vorstellung",
+        titleEn: "Greeting and Introduction",
+        youtubeUrl: "https://www.youtube.com/watch?v=0gNauGGe7I4",
+        questions: [
+          { question: "Wie heißt die Frau?", options: ["Anna", "Maria", "Lisa"], correctIndex: 0 },
+          { question: "Woher kommt sie?", options: ["Berlin", "München", "Hamburg"], correctIndex: 1 },
+          { question: "Was macht sie beruflich?", options: ["Lehrerin", "Ärztin", "Studentin"], correctIndex: 2 },
+        ],
+      },
+    ],
+    2: [
+      {
+        titleDe: "Beim Einkaufen",
+        titleEn: "At the Store",
+        youtubeUrl: "https://www.youtube.com/watch?v=M7SVxif0Fxs",
+        questions: [
+          { question: "Was kauft der Mann?", options: ["Brot", "Milch", "Äpfel"], correctIndex: 0 },
+          { question: "Wie viel kostet es?", options: ["2 Euro", "3 Euro", "5 Euro"], correctIndex: 1 },
+          { question: "Wo ist der Supermarkt?", options: ["Am Bahnhof", "In der Stadtmitte", "Neben der Post"], correctIndex: 2 },
+        ],
+      },
+    ],
+    3: [
+      {
+        titleDe: "Im Restaurant bestellen",
+        titleEn: "Ordering at a Restaurant",
+        youtubeUrl: "https://www.youtube.com/watch?v=G5kYzmcSn_E",
+        questions: [
+          { question: "Was bestellt die Frau?", options: ["Suppe", "Salat", "Schnitzel"], correctIndex: 2 },
+          { question: "Was trinkt der Mann?", options: ["Wasser", "Bier", "Kaffee"], correctIndex: 0 },
+          { question: "Wie schmeckt das Essen?", options: ["Schlecht", "Okay", "Sehr gut"], correctIndex: 2 },
+        ],
+      },
+    ],
+    5: [
+      {
+        titleDe: "Wegbeschreibung",
+        titleEn: "Giving Directions",
+        youtubeUrl: "https://www.youtube.com/watch?v=Qz0u08eQ6o4",
+        questions: [
+          { question: "Wohin will die Frau?", options: ["Zum Bahnhof", "Zur Post", "Zum Krankenhaus"], correctIndex: 0 },
+          { question: "Wie weit ist es?", options: ["5 Minuten", "10 Minuten", "20 Minuten"], correctIndex: 1 },
+          { question: "Was soll sie an der Ampel tun?", options: ["Geradeaus gehen", "Links abbiegen", "Rechts abbiegen"], correctIndex: 2 },
+        ],
+      },
+    ],
+    7: [
+      {
+        titleDe: "Arztbesuch und Gesundheit",
+        titleEn: "Doctor Visit and Health",
+        youtubeUrl: "https://www.youtube.com/watch?v=3jZ5vnY3kl0",
+        questions: [
+          { question: "Was hat der Patient?", options: ["Kopfschmerzen", "Bauchschmerzen", "Halsschmerzen"], correctIndex: 0 },
+          { question: "Was soll er nehmen?", options: ["Tabletten", "Tee", "Nichts"], correctIndex: 0 },
+          { question: "Wann soll er wiederkommen?", options: ["Morgen", "In einer Woche", "In einem Monat"], correctIndex: 1 },
+        ],
+      },
+    ],
+    10: [
+      {
+        titleDe: "Am Telefon",
+        titleEn: "On the Phone",
+        youtubeUrl: "https://www.youtube.com/watch?v=qYR8KSKMIjQ",
+        questions: [
+          { question: "Wer ruft an?", options: ["Ein Freund", "Der Chef", "Der Arzt"], correctIndex: 1 },
+          { question: "Worum geht es?", options: ["Ein Termin", "Eine Einladung", "Eine Beschwerde"], correctIndex: 0 },
+          { question: "Wann ist der Termin?", options: ["Montag", "Mittwoch", "Freitag"], correctIndex: 2 },
+        ],
+      },
+    ],
+  };
+
+  let totalListening = 0;
+  for (const [dayNum, exercises] of Object.entries(listeningData)) {
+    const chapter = await prisma.chapter.findFirst({ where: { dayNumber: parseInt(dayNum) } });
+    if (!chapter) continue;
+    for (const ex of exercises) {
+      const existing = await prisma.listeningExercise.findFirst({
+        where: { titleDe: ex.titleDe, chapterId: chapter.id },
+      });
+      if (!existing) {
+        await prisma.listeningExercise.create({
+          data: {
+            titleDe: ex.titleDe, titleEn: ex.titleEn,
+            youtubeUrl: ex.youtubeUrl,
+            questions: JSON.stringify(ex.questions),
+            chapterId: chapter.id,
+          },
+        });
+        totalListening++;
+      }
+    }
+  }
+  console.log(`  Listening: ${totalListening} exercises`);
+
+  // --- Writing Prompts ---
+  const writingData: Record<number, { type: string; promptDe: string; promptEn: string; modelAnswer: string; checklist: { label: string; hint: string }[] }[]> = {
+    3: [{
+      type: "email",
+      promptDe: "Schreiben Sie eine E-Mail an einen Freund. Laden Sie ihn zum Abendessen ein. Nennen Sie: Datum, Uhrzeit, Ort und was Sie kochen möchten.",
+      promptEn: "Write an email to a friend. Invite them to dinner. Include: date, time, place, and what you want to cook.",
+      modelAnswer: "Lieber Thomas,\n\nwie geht es dir? Ich möchte dich gerne zum Abendessen einladen. Am Samstag, den 15. Juni, um 19 Uhr bei mir zu Hause. Ich koche Pasta mit Tomatensoße.\n\nKannst du kommen? Ich freue mich auf deine Antwort!\n\nViele Grüße,\nAnna",
+      checklist: [
+        { label: "Datum", hint: "Mention a specific date" },
+        { label: "Uhr", hint: "Include a time" },
+        { label: "einladen", hint: "Use invitation language" },
+      ],
+    }],
+    6: [{
+      type: "complaint",
+      promptDe: "Schreiben Sie einen Beschwerdebrief an ein Hotel. Sie waren mit dem Zimmer nicht zufrieden. Beschreiben Sie: das Problem, was Sie erwarten und eine Lösung.",
+      promptEn: "Write a complaint letter to a hotel. You were not satisfied with the room. Describe: the problem, what you expect, and a solution.",
+      modelAnswer: "Sehr geehrte Damen und Herren,\n\nich war vom 10. bis 12. Juni in Ihrem Hotel (Zimmer 205). Leider war das Zimmer sehr laut und die Dusche hat nicht richtig funktioniert. Das Frühstück war kalt.\n\nIch bitte Sie um eine Erstattung von 50% des Zimmerpreises.\n\nMit freundlichen Grüßen,\nMax Müller",
+      checklist: [
+        { label: "Zimmer", hint: "Mention the room" },
+        { label: "Problem", hint: "Describe the issue" },
+        { label: "bitte", hint: "Make a polite request" },
+      ],
+    }],
+    10: [{
+      type: "letter",
+      promptDe: "Schreiben Sie einen Brief an Ihren Vermieter. Bitten Sie um eine Reparatur in Ihrer Wohnung. Nennen Sie: was kaputt ist, seit wann, und wann Sie zu Hause sind.",
+      promptEn: "Write a letter to your landlord. Ask for a repair in your apartment. Include: what is broken, since when, and when you are home.",
+      modelAnswer: "Sehr geehrter Herr Schmidt,\n\nich schreibe Ihnen wegen einer Reparatur in meiner Wohnung. Seit zwei Wochen funktioniert die Heizung im Schlafzimmer nicht mehr. Es ist sehr kalt.\n\nIch bin am Montag und Mittwoch nachmittags zu Hause. Bitte schicken Sie einen Handwerker.\n\nMit freundlichen Grüßen,\nSarah Klein",
+      checklist: [
+        { label: "Reparatur", hint: "Mention the repair" },
+        { label: "Wohnung", hint: "Reference the apartment" },
+        { label: "Handwerker", hint: "Request a repairman" },
+      ],
+    }],
+    15: [{
+      type: "email",
+      promptDe: "Schreiben Sie eine E-Mail an Ihren Kursleiter. Sie können nächste Woche nicht zum Deutschkurs kommen. Erklären Sie warum und fragen Sie nach den Hausaufgaben.",
+      promptEn: "Write an email to your course instructor. You can't come to German class next week. Explain why and ask about homework.",
+      modelAnswer: "Liebe Frau Müller,\n\nleider kann ich nächste Woche nicht zum Deutschkurs kommen, weil ich einen Arzttermin habe. Könnten Sie mir bitte die Hausaufgaben per E-Mail schicken?\n\nVielen Dank im Voraus!\n\nMit freundlichen Grüßen,\nAhmed Hassan",
+      checklist: [
+        { label: "Kurs", hint: "Mention the course" },
+        { label: "Hausaufgaben", hint: "Ask about homework" },
+        { label: "Entschuldigung", hint: "Include an apology/reason" },
+      ],
+    }],
+  };
+
+  let totalWriting = 0;
+  for (const [dayNum, prompts] of Object.entries(writingData)) {
+    const chapter = await prisma.chapter.findFirst({ where: { dayNumber: parseInt(dayNum) } });
+    if (!chapter) continue;
+    for (const p of prompts) {
+      const existing = await prisma.writingPrompt.findFirst({
+        where: { promptDe: p.promptDe, chapterId: chapter.id },
+      });
+      if (!existing) {
+        await prisma.writingPrompt.create({
+          data: {
+            type: p.type, promptDe: p.promptDe, promptEn: p.promptEn,
+            modelAnswer: p.modelAnswer,
+            checklist: JSON.stringify(p.checklist),
+            chapterId: chapter.id,
+          },
+        });
+        totalWriting++;
+      }
+    }
+  }
+  console.log(`  Writing: ${totalWriting} prompts`);
+
+  // --- Speaking Prompts ---
+  const speakingData: Record<number, { type: string; promptDe: string; promptEn: string; keyPhrases: string[]; modelAnswer: string; time: number }[]> = {
+    2: [{
+      type: "monologue",
+      promptDe: "Stellen Sie sich vor. Sagen Sie: Ihren Namen, woher Sie kommen, was Sie beruflich machen und was Ihr Hobby ist.",
+      promptEn: "Introduce yourself. Say: your name, where you come from, your job, and your hobby.",
+      keyPhrases: ["Ich heiße", "Ich komme aus", "Ich arbeite als", "Mein Hobby ist"],
+      modelAnswer: "Ich heiße Anna und ich komme aus der Türkei. Ich lebe seit drei Jahren in Deutschland. Ich arbeite als Krankenschwester in einem Krankenhaus. Mein Hobby ist Kochen. Am Wochenende koche ich gerne türkische Gerichte für meine Freunde.",
+      time: 120,
+    }],
+    5: [{
+      type: "dialogue",
+      promptDe: "Sie möchten einen Termin beim Arzt machen. Rufen Sie an und fragen Sie nach einem Termin. Sagen Sie, was Ihnen fehlt.",
+      promptEn: "You want to make a doctor's appointment. Call and ask for an appointment. Say what's wrong.",
+      keyPhrases: ["Ich möchte einen Termin", "Ich habe Schmerzen", "Wann ist ein Termin frei", "Vielen Dank"],
+      modelAnswer: "Guten Tag, mein Name ist Max Schmidt. Ich möchte gerne einen Termin machen. Ich habe seit drei Tagen starke Kopfschmerzen. Wann ist ein Termin frei? Dienstag um 10 Uhr passt mir gut. Vielen Dank!",
+      time: 120,
+    }],
+    8: [{
+      type: "picture_description",
+      promptDe: "Beschreiben Sie Ihren typischen Tag. Was machen Sie morgens, mittags und abends?",
+      promptEn: "Describe your typical day. What do you do in the morning, afternoon, and evening?",
+      keyPhrases: ["Morgens stehe ich auf", "Dann gehe ich", "Mittags esse ich", "Abends"],
+      modelAnswer: "Morgens stehe ich um 7 Uhr auf und frühstücke. Dann gehe ich zur Arbeit mit der U-Bahn. Mittags esse ich in der Kantine. Nach der Arbeit gehe ich einkaufen. Abends koche ich und sehe fern.",
+      time: 180,
+    }],
+    12: [{
+      type: "monologue",
+      promptDe: "Erzählen Sie von Ihrer letzten Reise. Wohin sind Sie gefahren? Was haben Sie gemacht? Wie war das Wetter?",
+      promptEn: "Tell about your last trip. Where did you go? What did you do? How was the weather?",
+      keyPhrases: ["Ich bin nach ... gefahren", "Das Wetter war", "Ich habe ... besucht", "Es hat mir gefallen"],
+      modelAnswer: "Letzten Sommer bin ich nach Spanien gefahren. Das Wetter war sehr schön und warm. Ich habe den Strand besucht und viel geschwommen. Ich habe auch die Altstadt besichtigt. Es hat mir sehr gut gefallen!",
+      time: 120,
+    }],
+  };
+
+  let totalSpeaking = 0;
+  for (const [dayNum, prompts] of Object.entries(speakingData)) {
+    const chapter = await prisma.chapter.findFirst({ where: { dayNumber: parseInt(dayNum) } });
+    if (!chapter) continue;
+    for (const p of prompts) {
+      const existing = await prisma.speakingPrompt.findFirst({
+        where: { promptDe: p.promptDe, chapterId: chapter.id },
+      });
+      if (!existing) {
+        await prisma.speakingPrompt.create({
+          data: {
+            type: p.type, promptDe: p.promptDe, promptEn: p.promptEn,
+            keyPhrases: JSON.stringify(p.keyPhrases),
+            modelAnswer: p.modelAnswer,
+            timeLimitSeconds: p.time,
+            chapterId: chapter.id,
+          },
+        });
+        totalSpeaking++;
+      }
+    }
+  }
+  console.log(`  Speaking: ${totalSpeaking} prompts`);
+
+  // --- Mock Tests ---
+  const mockTestDays = [5, 10, 15, 20, 25, 28, 29, 30];
+  let totalMockTests = 0;
+  for (const day of mockTestDays) {
+    const type = day >= 28 ? "full" : "mini";
+    const sections = type === "full"
+      ? [
+          { name: "Lesen", questionCount: 15, timeLimitSeconds: 900 },
+          { name: "Hören", questionCount: 10, timeLimitSeconds: 600 },
+          { name: "Schreiben", questionCount: 2, timeLimitSeconds: 1200 },
+          { name: "Wortschatz & Grammatik", questionCount: 20, timeLimitSeconds: 600 },
+        ]
+      : [
+          { name: "Wortschatz", questionCount: 10, timeLimitSeconds: 300 },
+          { name: "Grammatik", questionCount: 5, timeLimitSeconds: 180 },
+          { name: "Lesen", questionCount: 5, timeLimitSeconds: 300 },
+        ];
+
+    const existing = await prisma.mockTest.findFirst({ where: { dayNumber: day } });
+    if (!existing) {
+      await prisma.mockTest.create({
+        data: {
+          dayNumber: day,
+          type,
+          sections: JSON.stringify(sections),
+        },
+      });
+      totalMockTests++;
+    }
+  }
+  console.log(`  Mock Tests: ${totalMockTests} tests`);
+
   const totalVerbs = Object.values(chapterVerbs).reduce((sum, v) => sum + v.length, 0);
-  console.log(`\nSeeding complete: 30 chapters, 600 words, ${totalVerbs} verbs, ${totalRules} rules, ${totalExercises} exercises, ${totalPassages} reading passages.`);
+  console.log(`\nSeeding complete: 30 chapters, 600 words, ${totalVerbs} verbs, ${totalRules} rules, ${totalExercises} exercises, ${totalPassages} reading passages, ${totalListening} listening, ${totalWriting} writing, ${totalSpeaking} speaking, ${totalMockTests} mock tests.`);
 }
 
 main()

@@ -10,6 +10,10 @@ import {
   type ReadingPassageData,
   type ReadingQuestion,
 } from "@/lib/reading-engine";
+import {
+  parseListeningQuestions,
+  type ListeningExerciseData,
+} from "@/lib/listening-engine";
 
 type ExamSection = "select" | "reading";
 
@@ -26,6 +30,7 @@ export default function ExamPage() {
   const { language } = useSettings();
   const [section, setSection] = useState<ExamSection>("select");
   const [passages, setPassages] = useState<ReadingPassageData[]>([]);
+  const [listeningExercises, setListeningExercises] = useState<ListeningExerciseData[]>([]);
   const [currentPassage, setCurrentPassage] = useState<ReadingPassageData | null>(null);
   const [answers, setAnswers] = useState<(number | null)[]>([]);
   const [timeLeft, setTimeLeft] = useState(0);
@@ -40,6 +45,18 @@ export default function ExamPage() {
           data.map((p) => ({
             ...p,
             questions: parseQuestions(p.questions),
+          }))
+        )
+      )
+      .catch(() => {});
+
+    fetch("/api/listening")
+      .then((r) => r.json())
+      .then((data: { id: number; titleDe: string; titleEn: string; youtubeUrl: string; questions: string; chapterId: number }[]) =>
+        setListeningExercises(
+          data.map((e) => ({
+            ...e,
+            questions: parseListeningQuestions(e.questions),
           }))
         )
       )
@@ -108,6 +125,47 @@ export default function ExamPage() {
               </span>
             </button>
           ))}
+        </section>
+
+        <section className="exam-section-list">
+          <h2 className="exam-section-title">Hören (Listening)</h2>
+          {listeningExercises.length === 0 && (
+            <p className="empty-state">
+              {language === "de"
+                ? "Keine Hörübungen vorhanden. Seed-Skript ausführen."
+                : "No listening exercises yet. Run the seed script."}
+            </p>
+          )}
+          {listeningExercises.map((ex) => (
+            <a
+              key={ex.id}
+              className="exam-passage-card"
+              href={`/listening/${ex.chapterId}`}
+            >
+              <span className="exam-passage-title">
+                {language === "de" ? ex.titleDe : ex.titleEn}
+              </span>
+              <span className="exam-passage-meta">
+                {ex.questions.length} {language === "de" ? "Fragen" : "questions"}
+              </span>
+            </a>
+          ))}
+        </section>
+
+        <section className="exam-section-list">
+          <h2 className="exam-section-title">Schreiben (Writing)</h2>
+          <a className="exam-passage-card" href="/writing/3">
+            <span className="exam-passage-title">{language === "de" ? "Schreibübungen" : "Writing Exercises"}</span>
+            <span className="exam-passage-meta">{language === "de" ? "E-Mail, Brief, Beschwerde" : "Email, Letter, Complaint"}</span>
+          </a>
+        </section>
+
+        <section className="exam-section-list">
+          <h2 className="exam-section-title">Sprechen (Speaking)</h2>
+          <a className="exam-passage-card" href="/speaking/2">
+            <span className="exam-passage-title">{language === "de" ? "Sprechübungen" : "Speaking Exercises"}</span>
+            <span className="exam-passage-meta">{language === "de" ? "Monolog, Dialog, Bildbeschreibung" : "Monologue, Dialogue, Picture Description"}</span>
+          </a>
         </section>
       </main>
     );
