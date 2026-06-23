@@ -1579,3 +1579,34 @@ body {
   font-size: 1.3rem;
   margin: 1rem 0;
 }
+
+/* TTS Speak Button */
+.speak-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.15rem 0.3rem;
+  border-radius: 0.3rem;
+  transition: background 0.15s, transform 0.1s;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.speak-btn:hover {
+  background: rgba(233, 69, 96, 0.1);
+  transform: scale(1.15);
+}
+
+.speak-btn:active {
+  transform: scale(0.95);
+}
+
+.listen-all-btn {
+  width: 100%;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}

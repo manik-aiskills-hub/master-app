@@ -13,7 +13,8 @@
 | **Hören (Listening)** | YouTube-based listening exercises with active quiz and passive "Listen & Learn" mode |
 | **Quiz** | Spaced repetition engine — review random, weak, or due items |
 | **Settings** | Dark/light theme, DE/EN language toggle, exam date with pace tracking |
-| **PWA** | Installable on mobile and desktop |
+| **Audio TTS** | Native text-to-speech for every German word — per-word speaker buttons and "Listen All" batch playback |
+| **PWA** | Installable on iOS and Android — works offline with service worker caching |
 
 ## Tech Stack
 
@@ -204,7 +205,8 @@ master-app/
 │   │   ├── layout.tsx      # Root layout with providers
 │   │   └── page.tsx        # Home page (chapter list)
 │   ├── components/
-│   │   └── BottomNav.tsx   # Fixed bottom navigation
+│   │   ├── BottomNav.tsx   # Fixed bottom navigation
+│   │   └── RegisterSW.tsx  # Service worker registration
 │   └── lib/
 │       ├── db.ts           # Prisma client singleton
 │       ├── grammar-engine.ts
@@ -279,6 +281,73 @@ rm -f data/german-b1.db
 # Recreate schema and seed
 docker compose exec app sh -c "pnpm db:push && pnpm db:seed"
 ```
+
+## Mobile Access
+
+### Same Wi-Fi network
+
+Find your computer's local IP and open the app on your phone:
+
+```bash
+# macOS — get your local IP
+ipconfig getifaddr en0
+```
+
+Then open `http://<YOUR_IP>:3000` in your phone's browser.
+
+> If using `next dev`, add your IP to `allowedDevOrigins` in `next.config.ts`:
+> ```ts
+> allowedDevOrigins: ["http://192.168.x.x:3000"],
+> ```
+
+### Any network (ngrok tunnel)
+
+[ngrok](https://ngrok.com/) creates a public HTTPS URL that tunnels to your local server.
+
+```bash
+# Install ngrok (macOS)
+brew install ngrok
+
+# Authenticate (one-time — get your token at https://dashboard.ngrok.com)
+ngrok config add-authtoken YOUR_TOKEN
+
+# Start tunnel
+ngrok http 3000
+```
+
+Open the `https://...ngrok-free.dev` URL on any device. The free tier shows an interstitial page on first visit — just click "Visit Site".
+
+> **Security:** Never commit your ngrok authtoken to git.
+
+## Install as iOS / Android App (PWA)
+
+The app is a Progressive Web App. To install on your home screen:
+
+### iOS (Safari)
+1. Open the app URL in **Safari**
+2. Tap the **Share** button (box with arrow)
+3. Scroll down and tap **Add to Home Screen**
+4. Tap **Add**
+
+### Android (Chrome)
+1. Open the app URL in **Chrome**
+2. Tap the **three-dot menu** → **Add to Home Screen** (or **Install App**)
+3. Tap **Install**
+
+The app launches fullscreen like a native app and caches pages for offline use.
+
+## Design Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| **Web Speech API for TTS** | Zero-cost, no API keys, works offline with native OS voices. Every iOS/macOS device ships with high-quality German voices. |
+| **PWA over native app** | No App Store review, instant updates, single codebase. The `standalone` display mode gives a native feel. |
+| **Network-first service worker** | Always serves fresh data when online, falls back to cache when offline. Avoids stale content issues with cache-first strategies. |
+| **SQLite + Prisma** | Single-file database, no external services, portable. Prisma gives type-safe queries with zero config. |
+| **Docker dev environment** | Eliminates "works on my machine" — one `docker compose up` gets everything running. |
+| **Spaced repetition** | Evidence-based learning: words you get wrong come back sooner. Reduces study time by focusing on weak areas. |
+| **Accordion chapter layout** | All content (words, verbs, grammar, reading, listening) on one page per day — no context switching between tabs. |
+| **DE/EN toggle** | Immersive mode (all-German) for advanced learners, English labels for beginners. |
 
 ## Troubleshooting
 

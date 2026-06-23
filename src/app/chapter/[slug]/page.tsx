@@ -55,6 +55,31 @@ interface WritingData {
   checklist: string;
 }
 
+function speak(text: string, lang = "de-DE") {
+  if (typeof window === "undefined" || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = lang;
+  u.rate = 0.85;
+  const voices = window.speechSynthesis.getVoices();
+  const deVoice = voices.find((v) => v.lang.startsWith("de"));
+  if (deVoice) u.voice = deVoice;
+  window.speechSynthesis.speak(u);
+}
+
+function SpeakBtn({ text, lang = "de-DE" }: { text: string; lang?: string }) {
+  return (
+    <button
+      className="speak-btn"
+      onClick={(e) => { e.stopPropagation(); speak(text, lang); }}
+      aria-label={`Listen to "${text}"`}
+      type="button"
+    >
+      🔊
+    </button>
+  );
+}
+
 export default function ChapterPage() {
   const { slug } = useParams<{ slug: string }>();
   const { language } = useSettings();
@@ -232,6 +257,19 @@ export default function ChapterPage() {
         </button>
         {openSections.has("words") && (
           <div className="accordion-body">
+            <button
+              className="btn btn--secondary listen-all-btn"
+              onClick={() => {
+                const allTexts = words.map((w) => w.article ? `${w.article} ${w.german}` : w.german);
+                let i = 0;
+                const speakNext = () => {
+                  if (i < allTexts.length) { speak(allTexts[i]); i++; setTimeout(speakNext, 1500); }
+                };
+                speakNext();
+              }}
+            >
+              🔊 {de ? "Alle anhören" : "Listen All"}
+            </button>
             {/* Nouns */}
             {nouns.length > 0 && (
               <>
@@ -240,6 +278,7 @@ export default function ChapterPage() {
                   {nouns.map((w) => (
                     <div key={w.id} className="word-row">
                       <div className="word-row-de">
+                        <SpeakBtn text={w.article ? `${w.article} ${w.german}` : w.german} />
                         {w.article && <span className="word-article">{w.article}</span>}
                         <span className="word-row-text">{w.german}</span>
                       </div>
@@ -258,7 +297,10 @@ export default function ChapterPage() {
                 <div className="word-list">
                   {adjectives.map((w) => (
                     <div key={w.id} className="word-row">
-                      <span className="word-row-text">{w.german}</span>
+                      <div className="word-row-de">
+                        <SpeakBtn text={w.german} />
+                        <span className="word-row-text">{w.german}</span>
+                      </div>
                       <span className="word-row-en">{w.english}</span>
                     </div>
                   ))}
@@ -274,7 +316,10 @@ export default function ChapterPage() {
                 <div className="word-list">
                   {adverbs.map((w) => (
                     <div key={w.id} className="word-row">
-                      <span className="word-row-text">{w.german}</span>
+                      <div className="word-row-de">
+                        <SpeakBtn text={w.german} />
+                        <span className="word-row-text">{w.german}</span>
+                      </div>
                       <span className="word-row-en">{w.english}</span>
                     </div>
                   ))}
@@ -290,7 +335,10 @@ export default function ChapterPage() {
                 <div className="word-list">
                   {conjunctions.map((w) => (
                     <div key={w.id} className="word-row">
-                      <span className="word-row-text">{w.german}</span>
+                      <div className="word-row-de">
+                        <SpeakBtn text={w.german} />
+                        <span className="word-row-text">{w.german}</span>
+                      </div>
                       <span className="word-row-en">{w.english}</span>
                     </div>
                   ))}
@@ -317,6 +365,7 @@ export default function ChapterPage() {
                 {verbs.map((v) => (
                   <div key={v.id} className="verb-card-mini">
                     <div className="verb-card-header">
+                      <SpeakBtn text={v.infinitive} />
                       <strong>{v.infinitive}</strong>
                       <span className="verb-card-en">{v.english}</span>
                       {v.isIrregular && <span className="verb-irregular-tag">{de ? "unregelmäßig" : "irregular"}</span>}
