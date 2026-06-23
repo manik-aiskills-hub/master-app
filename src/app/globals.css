@@ -1676,11 +1676,14 @@ body {
   font-size: 1rem;
 }
 
-/* Word emoji */
-.word-emoji {
-  font-size: 1.2rem;
+/* Word images */
+.word-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.4rem;
+  object-fit: cover;
   flex-shrink: 0;
-  line-height: 1;
+  transition: opacity 0.3s;
 }
 
 /* OK button on wrong feedback */
@@ -1714,8 +1717,10 @@ body {
   margin-bottom: 1.5rem;
 }
 
-.article-emoji {
-  font-size: 2.5rem;
+.article-mode .word-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 0.6rem;
 }
 
 .article-word {

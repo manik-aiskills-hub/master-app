@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useSettings } from "@/lib/settings-context";
 import { checkAnswer, generateMCQOptions, calculateAccuracy, type WordItem } from "@/lib/word-engine";
+import WordImage from "@/components/WordImage";
 
 type Section = "words" | "grammar" | "writing" | "practice" | "quiz" | "notes";
 type PracticeMode = "flashcard" | "typing" | "mcq" | "spelling" | "article";
@@ -78,47 +79,6 @@ function SpeakBtn({ text, lang = "de-DE" }: { text: string; lang?: string }) {
       🔊
     </button>
   );
-}
-
-const WORD_EMOJI: Record<string, string> = {
-  "name": "📛", "first name": "📛", "last name": "📛", "family": "👨‍👩‍👧‍👦", "friend": "🤝", "woman": "👩", "man": "👨", "child": "👶", "children": "👶", "baby": "👶",
-  "house": "🏠", "home": "🏠", "apartment": "🏢", "room": "🛏️", "kitchen": "🍳", "bathroom": "🛁", "door": "🚪", "window": "🪟", "table": "🪑", "chair": "🪑", "bed": "🛏️",
-  "water": "💧", "food": "🍽️", "bread": "🍞", "milk": "🥛", "coffee": "☕", "tea": "🍵", "beer": "🍺", "wine": "🍷", "fruit": "🍎", "apple": "🍎", "meat": "🥩", "fish": "🐟", "egg": "🥚", "cheese": "🧀", "cake": "🍰", "rice": "🍚", "soup": "🍲", "sugar": "🍬", "salt": "🧂", "butter": "🧈",
-  "car": "🚗", "bus": "🚌", "train": "🚂", "bicycle": "🚲", "airplane": "✈️", "street": "🛣️", "city": "🏙️", "country": "🌍", "map": "🗺️", "ticket": "🎫",
-  "school": "🏫", "teacher": "👩‍🏫", "student": "🧑‍🎓", "book": "📚", "pen": "🖊️", "pencil": "✏️", "paper": "📄", "letter": "✉️", "newspaper": "📰",
-  "doctor": "👨‍⚕️", "hospital": "🏥", "medicine": "💊", "sick": "🤒", "healthy": "💪", "pain": "🤕", "tooth": "🦷", "eye": "👁️", "heart": "❤️", "head": "🧠",
-  "money": "💰", "bank": "🏦", "shop": "🛒", "price": "💲", "work": "💼", "job": "💼", "office": "🏢",
-  "telephone": "📞", "phone": "📱", "computer": "💻", "email": "📧", "internet": "🌐", "photo": "📸", "camera": "📷", "television": "📺", "radio": "📻", "clock": "🕐", "time": "⏰", "watch": "⌚",
-  "dog": "🐕", "cat": "🐈", "bird": "🐦", "flower": "🌸", "tree": "🌳", "garden": "🌻", "sun": "☀️", "moon": "🌙", "star": "⭐", "rain": "🌧️", "snow": "❄️", "weather": "🌤️", "wind": "💨",
-  "morning": "🌅", "evening": "🌆", "night": "🌙", "day": "☀️", "week": "📅", "month": "📆", "year": "📆", "today": "📅", "tomorrow": "➡️", "yesterday": "⬅️",
-  "birthday": "🎂", "party": "🎉", "gift": "🎁", "holiday": "🏖️", "vacation": "✈️", "christmas": "🎄",
-  "sport": "⚽", "football": "⚽", "music": "🎵", "movie": "🎬", "game": "🎮", "dance": "💃", "song": "🎶",
-  "shirt": "👕", "dress": "👗", "shoes": "👟", "hat": "🧢", "coat": "🧥", "pants": "👖", "bag": "👜",
-  "key": "🔑", "color": "🎨", "red": "🔴", "blue": "🔵", "green": "🟢", "yellow": "🟡", "white": "⬜", "black": "⬛",
-  "hello": "👋", "goodbye": "👋", "yes": "✅", "no": "❌", "please": "🙏", "thank you": "🙏", "thanks": "🙏", "sorry": "😔",
-  "love": "❤️", "happy": "😊", "sad": "😢", "angry": "😠", "tired": "😴", "hungry": "🍽️", "thirsty": "💧",
-  "big": "📏", "small": "🔹", "old": "👴", "new": "✨", "young": "🧒", "good": "👍", "bad": "👎", "beautiful": "🌟", "fast": "⚡", "slow": "🐢",
-  "question": "❓", "answer": "💬", "problem": "⚠️", "idea": "💡", "number": "🔢",
-  "eat": "🍽️", "drink": "🥤", "sleep": "😴", "go": "🚶", "come": "🔜", "run": "🏃", "read": "📖", "write": "✍️", "speak": "🗣️", "listen": "👂",
-  "learn": "📚", "teach": "👩‍🏫", "play": "🎮", "sing": "🎤", "cook": "👨‍🍳", "buy": "🛒", "sell": "💲", "help": "🤝",
-  "drive": "🚗", "fly": "✈️", "swim": "🏊", "walk": "🚶",
-  "open": "📂", "close": "📁", "give": "🎁", "take": "✋", "bring": "📦", "send": "📤",
-  "call": "📞", "ask": "❓", "say": "💬", "tell": "🗣️", "think": "🤔", "know": "🧠", "understand": "💡", "remember": "🧠", "forget": "🤷",
-  "like": "👍", "want": "🙋", "need": "⚡",
-  "live": "🏠", "begin": "▶️", "start": "▶️", "stop": "⏹️", "end": "🏁",
-  "wait": "⏳", "find": "🔍", "look": "👀", "see": "👁️", "hear": "👂", "feel": "🤚",
-  "wash": "🧼", "clean": "🧹", "pay": "💳", "cost": "💲",
-  "greeting": "👋", "introduction": "🤝", "address": "📍", "age": "🔢", "language": "🗣️",
-  "place": "📍", "travel": "✈️", "store": "🏪", "restaurant": "🍽️", "market": "🛒",
-};
-
-function wordEmoji(english: string): string {
-  const lower = english.toLowerCase();
-  if (WORD_EMOJI[lower]) return WORD_EMOJI[lower];
-  for (const [key, emoji] of Object.entries(WORD_EMOJI)) {
-    if (lower.includes(key) || key.includes(lower)) return emoji;
-  }
-  return "";
 }
 
 export default function ChapterPage() {
@@ -349,20 +309,17 @@ export default function ChapterPage() {
               <>
                 <h3 className="word-group-title">{de ? "Nomen" : "Nouns"}</h3>
                 <div className="word-list">
-                  {nouns.map((w) => {
-                    const emoji = wordEmoji(w.english);
-                    return (
-                      <div key={w.id} className="word-row">
-                        <div className="word-row-de">
-                          {emoji && <span className="word-emoji">{emoji}</span>}
-                          <SpeakBtn text={w.article ? `${w.article} ${w.german}` : w.german} />
-                          {w.article && <span className="word-article">{w.article}</span>}
-                          <span className="word-row-text">{w.german}</span>
-                        </div>
-                        <span className="word-row-en">{w.english}</span>
+                  {nouns.map((w) => (
+                    <div key={w.id} className="word-row">
+                      <WordImage word={w.english} />
+                      <div className="word-row-de">
+                        <SpeakBtn text={w.article ? `${w.article} ${w.german}` : w.german} />
+                        {w.article && <span className="word-article">{w.article}</span>}
+                        <span className="word-row-text">{w.german}</span>
                       </div>
-                    );
-                  })}
+                      <span className="word-row-en">{w.english}</span>
+                    </div>
+                  ))}
                 </div>
               </>
             )}
@@ -373,19 +330,16 @@ export default function ChapterPage() {
                   <span className="word-type-badge word-type-badge--adjective">{de ? "Adjektive" : "Adjectives"}</span>
                 </h3>
                 <div className="word-list">
-                  {adjectives.map((w) => {
-                    const emoji = wordEmoji(w.english);
-                    return (
+                  {adjectives.map((w) => (
                       <div key={w.id} className="word-row">
+                        <WordImage word={w.english} />
                         <div className="word-row-de">
-                          {emoji && <span className="word-emoji">{emoji}</span>}
                           <SpeakBtn text={w.german} />
                           <span className="word-row-text">{w.german}</span>
                         </div>
                         <span className="word-row-en">{w.english}</span>
                       </div>
-                    );
-                  })}
+                    ))}
                 </div>
               </>
             )}
@@ -396,19 +350,16 @@ export default function ChapterPage() {
                   <span className="word-type-badge word-type-badge--adverb">{de ? "Adverbien" : "Adverbs"}</span>
                 </h3>
                 <div className="word-list">
-                  {adverbs.map((w) => {
-                    const emoji = wordEmoji(w.english);
-                    return (
+                  {adverbs.map((w) => (
                       <div key={w.id} className="word-row">
+                        <WordImage word={w.english} />
                         <div className="word-row-de">
-                          {emoji && <span className="word-emoji">{emoji}</span>}
                           <SpeakBtn text={w.german} />
                           <span className="word-row-text">{w.german}</span>
                         </div>
                         <span className="word-row-en">{w.english}</span>
                       </div>
-                    );
-                  })}
+                    ))}
                 </div>
               </>
             )}
@@ -419,19 +370,16 @@ export default function ChapterPage() {
                   <span className="word-type-badge word-type-badge--conjunction">{de ? "Konjunktionen" : "Conjunctions"}</span>
                 </h3>
                 <div className="word-list">
-                  {conjunctions.map((w) => {
-                    const emoji = wordEmoji(w.english);
-                    return (
+                  {conjunctions.map((w) => (
                       <div key={w.id} className="word-row">
+                        <WordImage word={w.english} />
                         <div className="word-row-de">
-                          {emoji && <span className="word-emoji">{emoji}</span>}
                           <SpeakBtn text={w.german} />
                           <span className="word-row-text">{w.german}</span>
                         </div>
                         <span className="word-row-en">{w.english}</span>
                       </div>
-                    );
-                  })}
+                    ))}
                 </div>
               </>
             )}
@@ -452,12 +400,10 @@ export default function ChapterPage() {
             {verbs.length > 0 && (
               <>
                 <h3 className="word-group-title">{de ? "Verben" : "Verbs"}</h3>
-                {verbs.map((v) => {
-                  const emoji = wordEmoji(v.english);
-                  return (
+                {verbs.map((v) => (
                   <div key={v.id} className="verb-card-mini">
                     <div className="verb-card-header">
-                      {emoji && <span className="word-emoji">{emoji}</span>}
+                      <WordImage word={v.english} size={32} />
                       <SpeakBtn text={v.infinitive} />
                       <strong>{v.infinitive}</strong>
                       <span className="verb-card-en">{v.english}</span>
@@ -476,8 +422,7 @@ export default function ChapterPage() {
                       {v.praeteritum && <span>Präteritum: <strong>{v.praeteritum}</strong></span>}
                     </div>
                   </div>
-                  );
-                })}
+                ))}
               </>
             )}
             {verbs.length === 0 && <p className="empty-hint">{de ? "Keine Verben für diesen Tag" : "No verbs for this day"}</p>}
@@ -687,12 +632,11 @@ export default function ChapterPage() {
               const articleWords = nouns.filter((w) => w.article);
               const aw = articleWords[articleIdx];
               if (!aw) return <p className="empty-hint">{de ? "Keine Nomen mit Artikel" : "No nouns with articles"}</p>;
-              const emoji = wordEmoji(aw.english);
               return (
                 <div className="article-mode">
                   <p className="practice-counter">{articleIdx + 1} / {articleWords.length}</p>
                   <div className="article-prompt">
-                    {emoji && <span className="article-emoji">{emoji}</span>}
+                    <WordImage word={aw.english} size={80} />
                     <span className="article-word">{aw.german}</span>
                     <span className="article-en">{aw.english}</span>
                   </div>
