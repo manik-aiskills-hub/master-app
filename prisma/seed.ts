@@ -11,9 +11,15 @@ const chapters = [
     { de: "Stadt", en: "city", art: "die" }, { de: "Sprache", en: "language", art: "die" },
     { de: "Familie", en: "family", art: "die" }, { de: "Freund", en: "friend", art: "der" },
     { de: "Adresse", en: "address", art: "die" }, { de: "Telefonnummer", en: "phone number", art: "die" },
-    { de: "Nationalität", en: "nationality", art: "die" }, { de: "Herkunft", en: "origin", art: "die" },
-    { de: "Wohnort", en: "place of residence", art: "der" }, { de: "Heimat", en: "homeland", art: "die" },
-    { de: "Muttersprache", en: "mother tongue", art: "die" }, { de: "Staatsangehörigkeit", en: "citizenship", art: "die" },
+    // Adjectives
+    { de: "freundlich", en: "friendly", art: null, type: "adjective" },
+    { de: "nett", en: "nice", art: null, type: "adjective" },
+    // Adverbs
+    { de: "gern", en: "gladly", art: null, type: "adverb" },
+    { de: "auch", en: "also", art: null, type: "adverb" },
+    // Conjunctions
+    { de: "und", en: "and", art: null, type: "conjunction" },
+    { de: "oder", en: "or", art: null, type: "conjunction" },
   ]},
   { day: 2, slug: "familie-und-freunde", de: "Familie und Freunde", en: "Family and Friends", words: [
     { de: "Eltern", en: "parents", art: "die" }, { de: "Mutter", en: "mother", art: "die" },
@@ -22,10 +28,16 @@ const chapters = [
     { de: "Sohn", en: "son", art: "der" }, { de: "Tochter", en: "daughter", art: "die" },
     { de: "Großmutter", en: "grandmother", art: "die" }, { de: "Großvater", en: "grandfather", art: "der" },
     { de: "Onkel", en: "uncle", art: "der" }, { de: "Tante", en: "aunt", art: "die" },
-    { de: "Cousin", en: "cousin (m)", art: "der" }, { de: "Cousine", en: "cousin (f)", art: "die" },
     { de: "Ehemann", en: "husband", art: "der" }, { de: "Ehefrau", en: "wife", art: "die" },
-    { de: "Nachbar", en: "neighbor", art: "der" }, { de: "Bekannte", en: "acquaintance", art: "der/die" },
-    { de: "Verwandte", en: "relative", art: "der/die" }, { de: "Enkel", en: "grandchild", art: "der" },
+    // Adjectives
+    { de: "jung", en: "young", art: null, type: "adjective" },
+    { de: "alt", en: "old", art: null, type: "adjective" },
+    // Adverbs
+    { de: "zusammen", en: "together", art: null, type: "adverb" },
+    { de: "oft", en: "often", art: null, type: "adverb" },
+    // Conjunctions
+    { de: "aber", en: "but", art: null, type: "conjunction" },
+    { de: "weil", en: "because", art: null, type: "conjunction" },
   ]},
   { day: 3, slug: "wohnen", de: "Wohnen", en: "Housing", words: [
     { de: "Wohnung", en: "apartment", art: "die" }, { de: "Haus", en: "house", art: "das" },
@@ -35,9 +47,15 @@ const chapters = [
     { de: "Garten", en: "garden", art: "der" }, { de: "Miete", en: "rent", art: "die" },
     { de: "Stock", en: "floor/story", art: "der" }, { de: "Aufzug", en: "elevator", art: "der" },
     { de: "Treppe", en: "stairs", art: "die" }, { de: "Möbel", en: "furniture", art: "die" },
-    { de: "Tisch", en: "table", art: "der" }, { de: "Stuhl", en: "chair", art: "der" },
-    { de: "Bett", en: "bed", art: "das" }, { de: "Schrank", en: "closet", art: "der" },
-    { de: "Fenster", en: "window", art: "das" }, { de: "Tür", en: "door", art: "die" },
+    // Adjectives
+    { de: "groß", en: "big/large", art: null, type: "adjective" },
+    { de: "klein", en: "small", art: null, type: "adjective" },
+    // Adverbs
+    { de: "oben", en: "above/upstairs", art: null, type: "adverb" },
+    { de: "unten", en: "below/downstairs", art: null, type: "adverb" },
+    // Conjunctions
+    { de: "wenn", en: "when/if", art: null, type: "conjunction" },
+    { de: "dass", en: "that", art: null, type: "conjunction" },
   ]},
   { day: 4, slug: "essen-und-trinken", de: "Essen und Trinken", en: "Food and Drink", words: [
     { de: "Frühstück", en: "breakfast", art: "das" }, { de: "Mittagessen", en: "lunch", art: "das" },
@@ -47,9 +65,15 @@ const chapters = [
     { de: "Gemüse", en: "vegetables", art: "das" }, { de: "Obst", en: "fruit", art: "das" },
     { de: "Reis", en: "rice", art: "der" }, { de: "Nudeln", en: "noodles", art: "die" },
     { de: "Suppe", en: "soup", art: "die" }, { de: "Salat", en: "salad", art: "der" },
-    { de: "Kuchen", en: "cake", art: "der" }, { de: "Wasser", en: "water", art: "das" },
-    { de: "Kaffee", en: "coffee", art: "der" }, { de: "Tee", en: "tea", art: "der" },
-    { de: "Saft", en: "juice", art: "der" }, { de: "Milch", en: "milk", art: "die" },
+    // Adjectives
+    { de: "lecker", en: "delicious", art: null, type: "adjective" },
+    { de: "frisch", en: "fresh", art: null, type: "adjective" },
+    // Adverbs
+    { de: "immer", en: "always", art: null, type: "adverb" },
+    { de: "manchmal", en: "sometimes", art: null, type: "adverb" },
+    // Conjunctions
+    { de: "denn", en: "because/for", art: null, type: "conjunction" },
+    { de: "sondern", en: "but rather", art: null, type: "conjunction" },
   ]},
   { day: 5, slug: "einkaufen", de: "Einkaufen", en: "Shopping", words: [
     { de: "Geschäft", en: "shop", art: "das" }, { de: "Supermarkt", en: "supermarket", art: "der" },
@@ -58,10 +82,16 @@ const chapters = [
     { de: "Tasche", en: "bag", art: "die" }, { de: "Geld", en: "money", art: "das" },
     { de: "Rechnung", en: "bill", art: "die" }, { de: "Quittung", en: "receipt", art: "die" },
     { de: "Größe", en: "size", art: "die" }, { de: "Farbe", en: "color", art: "die" },
-    { de: "billig", en: "cheap", art: null }, { de: "teuer", en: "expensive", art: null },
     { de: "Kleidung", en: "clothing", art: "die" }, { de: "Schuhe", en: "shoes", art: "die" },
-    { de: "Hose", en: "pants", art: "die" }, { de: "Hemd", en: "shirt", art: "das" },
-    { de: "Jacke", en: "jacket", art: "die" }, { de: "Rabatt", en: "discount", art: "der" },
+    // Adjectives
+    { de: "billig", en: "cheap", art: null, type: "adjective" },
+    { de: "teuer", en: "expensive", art: null, type: "adjective" },
+    // Adverbs
+    { de: "vielleicht", en: "maybe", art: null, type: "adverb" },
+    { de: "bestimmt", en: "certainly", art: null, type: "adverb" },
+    // Conjunctions
+    { de: "obwohl", en: "although", art: null, type: "conjunction" },
+    { de: "damit", en: "so that", art: null, type: "conjunction" },
   ]},
   { day: 6, slug: "gesundheit", de: "Gesundheit", en: "Health", words: [
     { de: "Arzt", en: "doctor", art: "der" }, { de: "Krankenhaus", en: "hospital", art: "das" },
@@ -71,9 +101,15 @@ const chapters = [
     { de: "Kopfschmerzen", en: "headache", art: "die" }, { de: "Bauchschmerzen", en: "stomachache", art: "die" },
     { de: "Rezept", en: "prescription", art: "das" }, { de: "Untersuchung", en: "examination", art: "die" },
     { de: "Termin", en: "appointment", art: "der" }, { de: "Versicherung", en: "insurance", art: "die" },
-    { de: "Krankenkasse", en: "health insurance", art: "die" }, { de: "Tablette", en: "tablet/pill", art: "die" },
-    { de: "Sprechstunde", en: "consultation hours", art: "die" }, { de: "Gesundheit", en: "health", art: "die" },
-    { de: "Allergie", en: "allergy", art: "die" }, { de: "Verletzung", en: "injury", art: "die" },
+    // Adjectives
+    { de: "krank", en: "sick", art: null, type: "adjective" },
+    { de: "gesund", en: "healthy", art: null, type: "adjective" },
+    // Adverbs
+    { de: "regelmäßig", en: "regularly", art: null, type: "adverb" },
+    { de: "sofort", en: "immediately", art: null, type: "adverb" },
+    // Conjunctions
+    { de: "falls", en: "in case", art: null, type: "conjunction" },
+    { de: "bevor", en: "before", art: null, type: "conjunction" },
   ]},
   { day: 7, slug: "arbeit-und-beruf", de: "Arbeit und Beruf", en: "Work and Career", words: [
     { de: "Arbeit", en: "work", art: "die" }, { de: "Arbeitsplatz", en: "workplace", art: "der" },
@@ -83,9 +119,15 @@ const chapters = [
     { de: "Vertrag", en: "contract", art: "der" }, { de: "Urlaub", en: "vacation", art: "der" },
     { de: "Arbeitszeit", en: "working hours", art: "die" }, { de: "Teilzeit", en: "part-time", art: "die" },
     { de: "Vollzeit", en: "full-time", art: "die" }, { de: "Erfahrung", en: "experience", art: "die" },
-    { de: "Ausbildung", en: "training", art: "die" }, { de: "Praktikum", en: "internship", art: "das" },
-    { de: "Kündigung", en: "termination", art: "die" }, { de: "Firma", en: "company", art: "die" },
-    { de: "Büro", en: "office", art: "das" }, { de: "Aufgabe", en: "task", art: "die" },
+    // Adjectives
+    { de: "fleißig", en: "hardworking", art: null, type: "adjective" },
+    { de: "pünktlich", en: "punctual", art: null, type: "adjective" },
+    // Adverbs
+    { de: "leider", en: "unfortunately", art: null, type: "adverb" },
+    { de: "trotzdem", en: "nevertheless", art: null, type: "adverb" },
+    // Conjunctions
+    { de: "nachdem", en: "after", art: null, type: "conjunction" },
+    { de: "während", en: "while/during", art: null, type: "conjunction" },
   ]},
   { day: 8, slug: "schule-und-bildung", de: "Schule und Bildung", en: "School and Education", words: [
     { de: "Schule", en: "school", art: "die" }, { de: "Universität", en: "university", art: "die" },
@@ -95,9 +137,15 @@ const chapters = [
     { de: "Schüler", en: "student", art: "der" }, { de: "Hausaufgabe", en: "homework", art: "die" },
     { de: "Fach", en: "subject", art: "das" }, { de: "Abschluss", en: "degree", art: "der" },
     { de: "Bibliothek", en: "library", art: "die" }, { de: "Wörterbuch", en: "dictionary", art: "das" },
-    { de: "Übung", en: "exercise", art: "die" }, { de: "Klasse", en: "class", art: "die" },
-    { de: "Semester", en: "semester", art: "das" }, { de: "Studium", en: "studies", art: "das" },
-    { de: "Kenntnis", en: "knowledge", art: "die" }, { de: "Fortschritt", en: "progress", art: "der" },
+    // Adjectives
+    { de: "schwierig", en: "difficult", art: null, type: "adjective" },
+    { de: "einfach", en: "easy/simple", art: null, type: "adjective" },
+    // Adverbs
+    { de: "schon", en: "already", art: null, type: "adverb" },
+    { de: "noch", en: "still/yet", art: null, type: "adverb" },
+    // Conjunctions
+    { de: "seitdem", en: "since then", art: null, type: "conjunction" },
+    { de: "bis", en: "until", art: null, type: "conjunction" },
   ]},
   { day: 9, slug: "freizeit", de: "Freizeit", en: "Free Time", words: [
     { de: "Sport", en: "sport", art: "der" }, { de: "Musik", en: "music", art: "die" },
@@ -107,9 +155,15 @@ const chapters = [
     { de: "Park", en: "park", art: "der" }, { de: "Schwimmbad", en: "swimming pool", art: "das" },
     { de: "Verein", en: "club/association", art: "der" }, { de: "Spiel", en: "game", art: "das" },
     { de: "Ausflug", en: "excursion", art: "der" }, { de: "Wanderung", en: "hike", art: "die" },
-    { de: "Fahrrad", en: "bicycle", art: "das" }, { de: "Mannschaft", en: "team", art: "die" },
-    { de: "Veranstaltung", en: "event", art: "die" }, { de: "Zeitschrift", en: "magazine", art: "die" },
-    { de: "Fernsehen", en: "television", art: "das" }, { de: "Entspannung", en: "relaxation", art: "die" },
+    // Adjectives
+    { de: "lustig", en: "funny", art: null, type: "adjective" },
+    { de: "langweilig", en: "boring", art: null, type: "adjective" },
+    // Adverbs
+    { de: "draußen", en: "outside", art: null, type: "adverb" },
+    { de: "gerade", en: "right now", art: null, type: "adverb" },
+    // Conjunctions
+    { de: "sowohl...als auch", en: "both...and", art: null, type: "conjunction" },
+    { de: "entweder...oder", en: "either...or", art: null, type: "conjunction" },
   ]},
   { day: 10, slug: "reisen", de: "Reisen", en: "Travel", words: [
     { de: "Reise", en: "trip", art: "die" }, { de: "Flugzeug", en: "airplane", art: "das" },
@@ -525,6 +579,7 @@ async function main() {
             german: w.de,
             english: w.en,
             article: w.art,
+            wordType: (w as any).type ?? "noun",
             chapterId: chapter.id,
           },
         });
@@ -897,6 +952,69 @@ async function main() {
         { label: "Handwerker", hint: "Request a repairman" },
       ],
     }],
+    1: [{
+      type: "email",
+      promptDe: "Schreiben Sie eine E-Mail an einen neuen Kollegen. Stellen Sie sich vor: Name, Herkunft, Beruf und Hobbys.",
+      promptEn: "Write an email to a new colleague. Introduce yourself: name, origin, job, and hobbies.",
+      modelAnswer: "Hallo Herr Weber,\n\nich möchte mich kurz vorstellen. Ich heiße Maria und komme aus Spanien. Ich arbeite als Buchhalterin. In meiner Freizeit lese ich gern und spiele Tennis.\n\nIch freue mich auf die Zusammenarbeit!\n\nViele Grüße,\nMaria",
+      checklist: [{ label: "heiße", hint: "Introduce your name" }, { label: "komme aus", hint: "Say where you're from" }, { label: "arbeite", hint: "Mention your job" }],
+    }],
+    2: [{
+      type: "letter",
+      promptDe: "Schreiben Sie einen Brief an Ihre Großmutter. Erzählen Sie von Ihrer Familie und fragen Sie nach ihrer Gesundheit.",
+      promptEn: "Write a letter to your grandmother. Tell her about your family and ask about her health.",
+      modelAnswer: "Liebe Oma,\n\nwie geht es dir? Mir geht es gut. Meine Eltern und mein Bruder sind auch gesund. Letztes Wochenende haben wir zusammen gekocht.\n\nIch hoffe, du bist gesund und munter. Ich besuche dich bald!\n\nHerzliche Grüße,\ndein Enkel Max",
+      checklist: [{ label: "Familie", hint: "Mention family" }, { label: "gesund", hint: "Ask about health" }, { label: "besuche", hint: "Plan a visit" }],
+    }],
+    4: [{
+      type: "email",
+      promptDe: "Schreiben Sie eine E-Mail an einen Freund. Laden Sie ihn zum Kochen ein. Beschreiben Sie, was Sie zusammen kochen möchten.",
+      promptEn: "Write an email to a friend. Invite them to cook together. Describe what you want to cook.",
+      modelAnswer: "Lieber Jan,\n\nich möchte am Samstag zusammen kochen. Ich kaufe frisches Gemüse und Nudeln. Kannst du Brot und Käse mitbringen?\n\nWir können Pasta mit Salat machen. Komm um 18 Uhr zu mir!\n\nViele Grüße,\nSarah",
+      checklist: [{ label: "kochen", hint: "Mention cooking" }, { label: "mitbringen", hint: "Ask them to bring something" }, { label: "Uhr", hint: "Set a time" }],
+    }],
+    5: [{
+      type: "complaint",
+      promptDe: "Schreiben Sie einen Beschwerdebrief an ein Geschäft. Sie haben ein kaputtes Produkt gekauft. Beschreiben Sie das Problem und fordern Sie eine Lösung.",
+      promptEn: "Write a complaint to a store. You bought a broken product. Describe the problem and request a solution.",
+      modelAnswer: "Sehr geehrte Damen und Herren,\n\nam 15. Juni habe ich bei Ihnen Schuhe gekauft. Leider sind die Schuhe schon nach zwei Tagen kaputt gegangen. Die Quittung habe ich noch.\n\nIch bitte um einen Umtausch oder eine Rückerstattung.\n\nMit freundlichen Grüßen,\nPeter Schmidt",
+      checklist: [{ label: "gekauft", hint: "What you bought" }, { label: "kaputt", hint: "Describe the defect" }, { label: "bitte", hint: "Make a request" }],
+    }],
+    7: [{
+      type: "email",
+      promptDe: "Schreiben Sie eine E-Mail an eine Firma. Bewerben Sie sich um eine Stelle. Nennen Sie Ihre Erfahrung und Qualifikation.",
+      promptEn: "Write an email to a company. Apply for a job. Mention your experience and qualifications.",
+      modelAnswer: "Sehr geehrte Damen und Herren,\n\nich bewerbe mich um die Stelle als Büroassistent. Ich habe drei Jahre Erfahrung und spreche Deutsch und Englisch. Ich bin pünktlich und fleißig.\n\nMeinen Lebenslauf finden Sie im Anhang.\n\nMit freundlichen Grüßen,\nAnna Müller",
+      checklist: [{ label: "bewerbe", hint: "State your application" }, { label: "Erfahrung", hint: "Mention experience" }, { label: "Lebenslauf", hint: "Reference your CV" }],
+    }],
+    8: [{
+      type: "email",
+      promptDe: "Schreiben Sie eine E-Mail an Ihren Lehrer. Sie haben die Hausaufgaben nicht verstanden. Bitten Sie um Hilfe.",
+      promptEn: "Write an email to your teacher. You didn't understand the homework. Ask for help.",
+      modelAnswer: "Liebe Frau Schmidt,\n\nleider habe ich die Hausaufgaben für morgen nicht verstanden. Könnten Sie mir bitte die Aufgabe noch einmal erklären?\n\nIch möchte die Übung gerne richtig machen.\n\nVielen Dank!\n\nMit freundlichen Grüßen,\nAli",
+      checklist: [{ label: "Hausaufgaben", hint: "Reference homework" }, { label: "verstanden", hint: "Explain the issue" }, { label: "erklären", hint: "Ask for explanation" }],
+    }],
+    9: [{
+      type: "email",
+      promptDe: "Schreiben Sie eine E-Mail an einen Freund. Schlagen Sie eine Freizeitaktivität vor: Was, wann und wo.",
+      promptEn: "Write an email to a friend. Suggest a free-time activity: what, when, and where.",
+      modelAnswer: "Hallo Lisa,\n\nhast du am Samstag Zeit? Ich möchte ins Kino gehen. Der neue Film beginnt um 20 Uhr im Cineplex.\n\nDanach können wir zusammen etwas essen gehen. Was meinst du?\n\nViele Grüße,\nTom",
+      checklist: [{ label: "Zeit", hint: "Ask about availability" }, { label: "Kino", hint: "Suggest an activity" }, { label: "Uhr", hint: "Mention the time" }],
+    }],
+    11: [{
+      type: "letter",
+      promptDe: "Schreiben Sie einen Brief an das Verkehrsamt. Ihre Busverbindung ist oft verspätet. Beschreiben Sie das Problem und bitten Sie um Verbesserung.",
+      promptEn: "Write a letter to the transport office. Your bus connection is often delayed. Describe the problem and ask for improvement.",
+      modelAnswer: "Sehr geehrte Damen und Herren,\n\nich fahre jeden Tag mit dem Bus Linie 7. Leider hat der Bus oft Verspätung, manchmal 20 Minuten. Das ist ein großes Problem, weil ich dann zu spät zur Arbeit komme.\n\nIch bitte Sie, den Fahrplan zu verbessern.\n\nMit freundlichen Grüßen,\nKarl Weber",
+      checklist: [{ label: "Bus", hint: "Mention the transport" }, { label: "Verspätung", hint: "Describe the delay" }, { label: "bitte", hint: "Make a request" }],
+    }],
+    12: [{
+      type: "email",
+      promptDe: "Schreiben Sie eine E-Mail an einen Freund. Beschreiben Sie das Wetter heute und was Sie deswegen planen.",
+      promptEn: "Write an email about today's weather and your plans because of it.",
+      modelAnswer: "Hallo Maria,\n\nheute scheint die Sonne und es ist sehr warm. Deshalb möchte ich in den Park gehen und ein Picknick machen.\n\nHast du Lust mitzukommen? Bring eine Decke mit!\n\nViele Grüße,\nStefan",
+      checklist: [{ label: "Wetter", hint: "Describe the weather" }, { label: "warm", hint: "Use a weather adjective" }, { label: "möchte", hint: "State your plan" }],
+    }],
     15: [{
       type: "email",
       promptDe: "Schreiben Sie eine E-Mail an Ihren Kursleiter. Sie können nächste Woche nicht zum Deutschkurs kommen. Erklären Sie warum und fragen Sie nach den Hausaufgaben.",
@@ -907,6 +1025,27 @@ async function main() {
         { label: "Hausaufgaben", hint: "Ask about homework" },
         { label: "Entschuldigung", hint: "Include an apology/reason" },
       ],
+    }],
+    20: [{
+      type: "letter",
+      promptDe: "Schreiben Sie einen Brief an ein Museum. Fragen Sie nach Öffnungszeiten, Eintrittspreisen und ob es Führungen gibt.",
+      promptEn: "Write a letter to a museum. Ask about opening hours, ticket prices, and guided tours.",
+      modelAnswer: "Sehr geehrte Damen und Herren,\n\nich möchte gerne Ihr Museum besuchen. Könnten Sie mir bitte die Öffnungszeiten und Eintrittspreise mitteilen? Gibt es auch Führungen auf Deutsch?\n\nVielen Dank im Voraus.\n\nMit freundlichen Grüßen,\nLena Fischer",
+      checklist: [{ label: "Öffnungszeiten", hint: "Ask about hours" }, { label: "Eintritt", hint: "Ask about price" }, { label: "Führung", hint: "Ask about tours" }],
+    }],
+    25: [{
+      type: "complaint",
+      promptDe: "Schreiben Sie einen Beschwerdebrief an Ihren Telefonanbieter. Ihr Internet funktioniert seit einer Woche nicht. Fordern Sie eine schnelle Lösung.",
+      promptEn: "Write a complaint to your phone provider. Your internet has been down for a week. Demand a quick solution.",
+      modelAnswer: "Sehr geehrte Damen und Herren,\n\nseit einer Woche funktioniert mein Internet nicht mehr. Ich habe bereits zweimal angerufen, aber das Problem besteht weiterhin.\n\nIch bitte Sie dringend um eine sofortige Reparatur. Andernfalls werde ich den Vertrag kündigen.\n\nMit freundlichen Grüßen,\nThomas Braun",
+      checklist: [{ label: "Internet", hint: "State the problem" }, { label: "Woche", hint: "Mention duration" }, { label: "dringend", hint: "Express urgency" }],
+    }],
+    30: [{
+      type: "letter",
+      promptDe: "Schreiben Sie einen Brief an Ihren Prüfer. Bedanken Sie sich für den B1-Kurs. Beschreiben Sie, was Sie gelernt haben und was Ihre Pläne sind.",
+      promptEn: "Write a letter to your examiner. Thank them for the B1 course. Describe what you learned and your future plans.",
+      modelAnswer: "Sehr geehrte Frau Schneider,\n\nich möchte mich herzlich für den B1-Kurs bedanken. Ich habe viel gelernt: Grammatik, Wortschatz und besonders das Schreiben von Briefen.\n\nNach der Prüfung möchte ich einen B2-Kurs besuchen und weiter Deutsch lernen.\n\nMit freundlichen Grüßen,\nMohamed Ali",
+      checklist: [{ label: "bedanken", hint: "Express thanks" }, { label: "gelernt", hint: "Say what you learned" }, { label: "Pläne", hint: "Mention future plans" }],
     }],
   };
 

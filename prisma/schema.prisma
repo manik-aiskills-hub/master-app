@@ -41,6 +41,7 @@ model Word {
   english     String
   article     String?
   plural      String?
+  wordType    String   @default("noun") // noun, verb, adjective, adverb, conjunction, preposition
   exampleDe   String?
   exampleEn   String?
   chapterId   Int

@@ -4,6 +4,7 @@ export interface WordItem {
   english: string;
   article: string | null;
   plural: string | null;
+  wordType: string | null;
   exampleDe: string | null;
   exampleEn: string | null;
 }

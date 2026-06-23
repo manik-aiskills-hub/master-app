@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
       english: w.english,
       article: w.article,
       plural: w.plural,
+      wordType: w.wordType,
       exampleDe: w.exampleDe,
       exampleEn: w.exampleEn,
       progress: w.progress[0] ?? null,

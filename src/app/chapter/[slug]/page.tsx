@@ -4,21 +4,23 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useSettings } from "@/lib/settings-context";
-import { t } from "@/lib/i18n";
 import { checkAnswer, generateMCQOptions, calculateAccuracy, type WordItem } from "@/lib/word-engine";
 
 type Mode = "flashcard" | "typing" | "mcq";
 
 interface ChapterInfo {
   id: number;
+  slug: string;
   titleDe: string;
   titleEn: string;
+  dayNumber: number;
 }
 
 export default function ChapterPage() {
   const { slug } = useParams<{ slug: string }>();
   const { language } = useSettings();
 
+  const [chapters, setChapters] = useState<ChapterInfo[]>([]);
   const [chapter, setChapter] = useState<ChapterInfo | null>(null);
   const [words, setWords] = useState<WordItem[]>([]);
   const [current, setCurrent] = useState(0);
@@ -33,10 +35,11 @@ export default function ChapterPage() {
   useEffect(() => {
     fetch(`/api/chapters`)
       .then((r) => r.json())
-      .then((chapters) => {
-        const ch = chapters.find((c: { slug: string }) => c.slug === slug);
+      .then((allChapters: ChapterInfo[]) => {
+        setChapters(allChapters);
+        const ch = allChapters.find((c) => c.slug === slug);
         if (ch) {
-          setChapter({ id: ch.id, titleDe: ch.titleDe, titleEn: ch.titleEn });
+          setChapter(ch);
           return fetch(`/api/words?chapterId=${ch.id}`);
         }
       })
@@ -48,6 +51,9 @@ export default function ChapterPage() {
   }, [slug]);
 
   const currentWord = words[current];
+  const chapterIdx = chapters.findIndex((c) => c.slug === slug);
+  const prevChapter = chapterIdx > 0 ? chapters[chapterIdx - 1] : null;
+  const nextChapter = chapterIdx < chapters.length - 1 ? chapters[chapterIdx + 1] : null;
 
   useEffect(() => {
     if (currentWord && mode === "mcq") {
@@ -97,12 +103,32 @@ export default function ChapterPage() {
     return (
       <main className="container">
         <div className="session-complete">
-          <h2>Session Complete!</h2>
+          <h2>{language === "de" ? "Sitzung abgeschlossen!" : "Session Complete!"}</h2>
           <div className="score-display">
             <span className="score-number">{accuracy}%</span>
-            <span className="score-label">{score.correct}/{score.total} correct</span>
+            <span className="score-label">{score.correct}/{score.total} {language === "de" ? "richtig" : "correct"}</span>
           </div>
-          <a href="/" className="btn btn--primary">Back to Chapters</a>
+          <div className="session-nav">
+            <Link href="/" className="btn btn--secondary">
+              ← {language === "de" ? "Startseite" : "Home"}
+            </Link>
+            {nextChapter && (
+              <Link href={`/chapter/${nextChapter.slug}`} className="btn btn--primary">
+                {language === "de" ? "Nächstes Kapitel" : "Next Chapter"} →
+              </Link>
+            )}
+          </div>
+          <div className="chapter-links" style={{ marginTop: "1rem" }}>
+            <Link href={`/verbs/${slug}`} className="btn btn--secondary">
+              {language === "de" ? "Verben üben" : "Practice Verbs"}
+            </Link>
+            <Link href={`/grammar/${slug}`} className="btn btn--secondary">
+              {language === "de" ? "Grammatik" : "Grammar"}
+            </Link>
+            <Link href={`/writing/${chapter.id}`} className="btn btn--secondary">
+              {language === "de" ? "Schreiben üben" : "Practice Writing"}
+            </Link>
+          </div>
         </div>
       </main>
     );
@@ -112,17 +138,41 @@ export default function ChapterPage() {
 
   return (
     <main className="container">
+      <nav className="chapter-nav-bar">
+        <Link href="/" className="chapter-nav-back">
+          ← {language === "de" ? "Startseite" : "Home"}
+        </Link>
+        <div className="chapter-nav-arrows">
+          {prevChapter ? (
+            <Link href={`/chapter/${prevChapter.slug}`} className="chapter-nav-arrow" title={language === "de" ? prevChapter.titleDe : prevChapter.titleEn}>
+              ‹ {language === "de" ? "Zurück" : "Prev"}
+            </Link>
+          ) : <span className="chapter-nav-arrow chapter-nav-arrow--disabled">‹ {language === "de" ? "Zurück" : "Prev"}</span>}
+          {nextChapter ? (
+            <Link href={`/chapter/${nextChapter.slug}`} className="chapter-nav-arrow" title={language === "de" ? nextChapter.titleDe : nextChapter.titleEn}>
+              {language === "de" ? "Weiter" : "Next"} ›
+            </Link>
+          ) : <span className="chapter-nav-arrow chapter-nav-arrow--disabled">{language === "de" ? "Weiter" : "Next"} ›</span>}
+        </div>
+      </nav>
+
       <div className="chapter-header">
-        <h2>{language === "de" ? chapter.titleDe : chapter.titleEn}</h2>
+        <div>
+          <span className="chapter-day-badge">{language === "de" ? "Tag" : "Day"} {chapter.dayNumber}</span>
+          <h2>{language === "de" ? chapter.titleDe : chapter.titleEn}</h2>
+        </div>
         <span className="word-counter">{current + 1}/{words.length}</span>
       </div>
 
       <div className="chapter-links">
         <Link href={`/verbs/${slug}`} className="btn btn--primary">
-          Practice Verbs
+          {language === "de" ? "Verben" : "Verbs"}
         </Link>
         <Link href={`/grammar/${slug}`} className="btn btn--primary">
-          Grammar
+          {language === "de" ? "Grammatik" : "Grammar"}
+        </Link>
+        <Link href={`/writing/${chapter.id}`} className="btn btn--primary">
+          {language === "de" ? "Schreiben" : "Writing"}
         </Link>
       </div>
 
@@ -140,29 +190,47 @@ export default function ChapterPage() {
 
       {feedback && (
         <div className={`feedback feedback--${feedback}`}>
-          {feedback === "correct" ? "Correct!" : `Wrong — ${currentWord.english}`}
+          {feedback === "correct"
+            ? (language === "de" ? "Richtig!" : "Correct!")
+            : `${language === "de" ? "Falsch" : "Wrong"} — ${currentWord.english}`}
         </div>
       )}
 
       {mode === "flashcard" && (
         <div className="flashcard" onClick={() => setFlipped(!flipped)} role="button" tabIndex={0}>
           <div className="flashcard__front">
-            {currentWord.article && <span className="word-article">{currentWord.article}</span>}
-            <span className="word-german">{currentWord.german}</span>
+            <div className="word-side-de">
+              {currentWord.article && <span className="word-article">{currentWord.article}</span>}
+              <span className="word-german">{currentWord.german}</span>
+              {currentWord.wordType && (
+                <span className={`word-type-badge word-type-badge--${currentWord.wordType}`}>
+                  {currentWord.wordType}
+                </span>
+              )}
+            </div>
+            <div className="word-side-icon">
+              {currentWord.article === "der" ? "🔵" : currentWord.article === "die" ? "🔴" : currentWord.article === "das" ? "🟢" : "📝"}
+            </div>
+            <div className="word-side-en">
+              {flipped ? (
+                <span className="word-english">{currentWord.english}</span>
+              ) : (
+                <span className="word-english" style={{ opacity: 0.3 }}>?</span>
+              )}
+            </div>
           </div>
-          {flipped && (
+          {flipped && currentWord.exampleDe && (
             <div className="flashcard__back">
-              <span className="word-english">{currentWord.english}</span>
-              {currentWord.exampleDe && <p className="word-example">{currentWord.exampleDe}</p>}
+              <p className="word-example">{currentWord.exampleDe}</p>
             </div>
           )}
           {flipped && !feedback && (
             <div className="flashcard__actions">
               <button className="btn btn--wrong" onClick={(e) => { e.stopPropagation(); recordAnswer(false); }}>
-                Wrong
+                {language === "de" ? "Falsch" : "Wrong"}
               </button>
               <button className="btn btn--correct" onClick={(e) => { e.stopPropagation(); recordAnswer(true); }}>
-                Correct
+                {language === "de" ? "Richtig" : "Correct"}
               </button>
             </div>
           )}
@@ -174,6 +242,9 @@ export default function ChapterPage() {
           <div className="typing-prompt">
             {currentWord.article && <span className="word-article">{currentWord.article}</span>}
             <span className="word-german">{currentWord.german}</span>
+            {currentWord.wordType && currentWord.wordType !== "noun" && (
+              <span className={`word-type-badge word-type-badge--${currentWord.wordType}`}>{currentWord.wordType}</span>
+            )}
           </div>
           <form onSubmit={handleTypingSubmit}>
             <input
@@ -181,12 +252,12 @@ export default function ChapterPage() {
               type="text"
               value={typingInput}
               onChange={(e) => setTypingInput(e.target.value)}
-              placeholder="Type the English translation..."
+              placeholder={language === "de" ? "Englische Übersetzung eingeben..." : "Type the English translation..."}
               autoFocus
               disabled={!!feedback}
             />
             <button className="btn btn--primary" type="submit" disabled={!!feedback}>
-              Check
+              {language === "de" ? "Prüfen" : "Check"}
             </button>
           </form>
         </div>
@@ -197,6 +268,9 @@ export default function ChapterPage() {
           <div className="mcq-prompt">
             {currentWord.article && <span className="word-article">{currentWord.article}</span>}
             <span className="word-german">{currentWord.german}</span>
+            {currentWord.wordType && currentWord.wordType !== "noun" && (
+              <span className={`word-type-badge word-type-badge--${currentWord.wordType}`}>{currentWord.wordType}</span>
+            )}
           </div>
           <div className="mcq-options">
             {mcqOptions.map((opt) => (
