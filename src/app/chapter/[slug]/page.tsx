@@ -7,7 +7,7 @@ import { useSettings } from "@/lib/settings-context";
 import { checkAnswer, generateMCQOptions, calculateAccuracy, type WordItem } from "@/lib/word-engine";
 
 type Section = "words" | "grammar" | "writing" | "practice" | "quiz" | "notes";
-type PracticeMode = "flashcard" | "typing" | "mcq" | "spelling";
+type PracticeMode = "flashcard" | "typing" | "mcq" | "spelling" | "article";
 
 interface ChapterInfo {
   id: number;
@@ -80,6 +80,47 @@ function SpeakBtn({ text, lang = "de-DE" }: { text: string; lang?: string }) {
   );
 }
 
+const WORD_EMOJI: Record<string, string> = {
+  "name": "📛", "first name": "📛", "last name": "📛", "family": "👨‍👩‍👧‍👦", "friend": "🤝", "woman": "👩", "man": "👨", "child": "👶", "children": "👶", "baby": "👶",
+  "house": "🏠", "home": "🏠", "apartment": "🏢", "room": "🛏️", "kitchen": "🍳", "bathroom": "🛁", "door": "🚪", "window": "🪟", "table": "🪑", "chair": "🪑", "bed": "🛏️",
+  "water": "💧", "food": "🍽️", "bread": "🍞", "milk": "🥛", "coffee": "☕", "tea": "🍵", "beer": "🍺", "wine": "🍷", "fruit": "🍎", "apple": "🍎", "meat": "🥩", "fish": "🐟", "egg": "🥚", "cheese": "🧀", "cake": "🍰", "rice": "🍚", "soup": "🍲", "sugar": "🍬", "salt": "🧂", "butter": "🧈",
+  "car": "🚗", "bus": "🚌", "train": "🚂", "bicycle": "🚲", "airplane": "✈️", "street": "🛣️", "city": "🏙️", "country": "🌍", "map": "🗺️", "ticket": "🎫",
+  "school": "🏫", "teacher": "👩‍🏫", "student": "🧑‍🎓", "book": "📚", "pen": "🖊️", "pencil": "✏️", "paper": "📄", "letter": "✉️", "newspaper": "📰",
+  "doctor": "👨‍⚕️", "hospital": "🏥", "medicine": "💊", "sick": "🤒", "healthy": "💪", "pain": "🤕", "tooth": "🦷", "eye": "👁️", "heart": "❤️", "head": "🧠",
+  "money": "💰", "bank": "🏦", "shop": "🛒", "price": "💲", "work": "💼", "job": "💼", "office": "🏢",
+  "telephone": "📞", "phone": "📱", "computer": "💻", "email": "📧", "internet": "🌐", "photo": "📸", "camera": "📷", "television": "📺", "radio": "📻", "clock": "🕐", "time": "⏰", "watch": "⌚",
+  "dog": "🐕", "cat": "🐈", "bird": "🐦", "flower": "🌸", "tree": "🌳", "garden": "🌻", "sun": "☀️", "moon": "🌙", "star": "⭐", "rain": "🌧️", "snow": "❄️", "weather": "🌤️", "wind": "💨",
+  "morning": "🌅", "evening": "🌆", "night": "🌙", "day": "☀️", "week": "📅", "month": "📆", "year": "📆", "today": "📅", "tomorrow": "➡️", "yesterday": "⬅️",
+  "birthday": "🎂", "party": "🎉", "gift": "🎁", "holiday": "🏖️", "vacation": "✈️", "christmas": "🎄",
+  "sport": "⚽", "football": "⚽", "music": "🎵", "movie": "🎬", "game": "🎮", "dance": "💃", "song": "🎶",
+  "shirt": "👕", "dress": "👗", "shoes": "👟", "hat": "🧢", "coat": "🧥", "pants": "👖", "bag": "👜",
+  "key": "🔑", "color": "🎨", "red": "🔴", "blue": "🔵", "green": "🟢", "yellow": "🟡", "white": "⬜", "black": "⬛",
+  "hello": "👋", "goodbye": "👋", "yes": "✅", "no": "❌", "please": "🙏", "thank you": "🙏", "thanks": "🙏", "sorry": "😔",
+  "love": "❤️", "happy": "😊", "sad": "😢", "angry": "😠", "tired": "😴", "hungry": "🍽️", "thirsty": "💧",
+  "big": "📏", "small": "🔹", "old": "👴", "new": "✨", "young": "🧒", "good": "👍", "bad": "👎", "beautiful": "🌟", "fast": "⚡", "slow": "🐢",
+  "question": "❓", "answer": "💬", "problem": "⚠️", "idea": "💡", "number": "🔢",
+  "eat": "🍽️", "drink": "🥤", "sleep": "😴", "go": "🚶", "come": "🔜", "run": "🏃", "read": "📖", "write": "✍️", "speak": "🗣️", "listen": "👂",
+  "learn": "📚", "teach": "👩‍🏫", "play": "🎮", "sing": "🎤", "cook": "👨‍🍳", "buy": "🛒", "sell": "💲", "help": "🤝",
+  "drive": "🚗", "fly": "✈️", "swim": "🏊", "walk": "🚶",
+  "open": "📂", "close": "📁", "give": "🎁", "take": "✋", "bring": "📦", "send": "📤",
+  "call": "📞", "ask": "❓", "say": "💬", "tell": "🗣️", "think": "🤔", "know": "🧠", "understand": "💡", "remember": "🧠", "forget": "🤷",
+  "like": "👍", "want": "🙋", "need": "⚡",
+  "live": "🏠", "begin": "▶️", "start": "▶️", "stop": "⏹️", "end": "🏁",
+  "wait": "⏳", "find": "🔍", "look": "👀", "see": "👁️", "hear": "👂", "feel": "🤚",
+  "wash": "🧼", "clean": "🧹", "pay": "💳", "cost": "💲",
+  "greeting": "👋", "introduction": "🤝", "address": "📍", "age": "🔢", "language": "🗣️",
+  "place": "📍", "travel": "✈️", "store": "🏪", "restaurant": "🍽️", "market": "🛒",
+};
+
+function wordEmoji(english: string): string {
+  const lower = english.toLowerCase();
+  if (WORD_EMOJI[lower]) return WORD_EMOJI[lower];
+  for (const [key, emoji] of Object.entries(WORD_EMOJI)) {
+    if (lower.includes(key) || key.includes(lower)) return emoji;
+  }
+  return "";
+}
+
 export default function ChapterPage() {
   const { slug } = useParams<{ slug: string }>();
   const { language } = useSettings();
@@ -121,6 +162,10 @@ export default function ChapterPage() {
   // Spelling state
   const [spellingInput, setSpellingInput] = useState("");
   const [spellingRevealed, setSpellingRevealed] = useState(false);
+
+  // Article practice state
+  const [articleIdx, setArticleIdx] = useState(0);
+  const [articleFeedback, setArticleFeedback] = useState<{ correct: boolean; answer: string } | null>(null);
 
   useEffect(() => {
     fetch("/api/chapters")
@@ -190,14 +235,26 @@ export default function ChapterPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ wordId: practiceWord.id, correct }),
     }).catch(() => {});
-    setTimeout(() => {
-      setFeedback(null);
-      setFlipped(false);
-      setTypingInput("");
-      if (practiceIdx + 1 < words.length) setPracticeIdx((i) => i + 1);
-      else setPracticeIdx(0);
-    }, 1000);
+    if (correct) {
+      setTimeout(() => {
+        setFeedback(null);
+        setFlipped(false);
+        setTypingInput("");
+        if (practiceIdx + 1 < words.length) setPracticeIdx((i) => i + 1);
+        else setPracticeIdx(0);
+      }, 1000);
+    }
   }, [practiceWord, practiceIdx, words.length]);
+
+  const dismissFeedback = useCallback(() => {
+    setFeedback(null);
+    setFlipped(false);
+    setTypingInput("");
+    setSpellingInput("");
+    setSpellingRevealed(false);
+    if (practiceIdx + 1 < words.length) setPracticeIdx((i) => i + 1);
+    else setPracticeIdx(0);
+  }, [practiceIdx, words.length]);
 
   const handlePracticeTyping = useCallback((e: React.FormEvent) => {
     e.preventDefault();
@@ -292,16 +349,20 @@ export default function ChapterPage() {
               <>
                 <h3 className="word-group-title">{de ? "Nomen" : "Nouns"}</h3>
                 <div className="word-list">
-                  {nouns.map((w) => (
-                    <div key={w.id} className="word-row">
-                      <div className="word-row-de">
-                        <SpeakBtn text={w.article ? `${w.article} ${w.german}` : w.german} />
-                        {w.article && <span className="word-article">{w.article}</span>}
-                        <span className="word-row-text">{w.german}</span>
+                  {nouns.map((w) => {
+                    const emoji = wordEmoji(w.english);
+                    return (
+                      <div key={w.id} className="word-row">
+                        <div className="word-row-de">
+                          {emoji && <span className="word-emoji">{emoji}</span>}
+                          <SpeakBtn text={w.article ? `${w.article} ${w.german}` : w.german} />
+                          {w.article && <span className="word-article">{w.article}</span>}
+                          <span className="word-row-text">{w.german}</span>
+                        </div>
+                        <span className="word-row-en">{w.english}</span>
                       </div>
-                      <span className="word-row-en">{w.english}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </>
             )}
@@ -312,15 +373,19 @@ export default function ChapterPage() {
                   <span className="word-type-badge word-type-badge--adjective">{de ? "Adjektive" : "Adjectives"}</span>
                 </h3>
                 <div className="word-list">
-                  {adjectives.map((w) => (
-                    <div key={w.id} className="word-row">
-                      <div className="word-row-de">
-                        <SpeakBtn text={w.german} />
-                        <span className="word-row-text">{w.german}</span>
+                  {adjectives.map((w) => {
+                    const emoji = wordEmoji(w.english);
+                    return (
+                      <div key={w.id} className="word-row">
+                        <div className="word-row-de">
+                          {emoji && <span className="word-emoji">{emoji}</span>}
+                          <SpeakBtn text={w.german} />
+                          <span className="word-row-text">{w.german}</span>
+                        </div>
+                        <span className="word-row-en">{w.english}</span>
                       </div>
-                      <span className="word-row-en">{w.english}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </>
             )}
@@ -331,15 +396,19 @@ export default function ChapterPage() {
                   <span className="word-type-badge word-type-badge--adverb">{de ? "Adverbien" : "Adverbs"}</span>
                 </h3>
                 <div className="word-list">
-                  {adverbs.map((w) => (
-                    <div key={w.id} className="word-row">
-                      <div className="word-row-de">
-                        <SpeakBtn text={w.german} />
-                        <span className="word-row-text">{w.german}</span>
+                  {adverbs.map((w) => {
+                    const emoji = wordEmoji(w.english);
+                    return (
+                      <div key={w.id} className="word-row">
+                        <div className="word-row-de">
+                          {emoji && <span className="word-emoji">{emoji}</span>}
+                          <SpeakBtn text={w.german} />
+                          <span className="word-row-text">{w.german}</span>
+                        </div>
+                        <span className="word-row-en">{w.english}</span>
                       </div>
-                      <span className="word-row-en">{w.english}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </>
             )}
@@ -350,15 +419,19 @@ export default function ChapterPage() {
                   <span className="word-type-badge word-type-badge--conjunction">{de ? "Konjunktionen" : "Conjunctions"}</span>
                 </h3>
                 <div className="word-list">
-                  {conjunctions.map((w) => (
-                    <div key={w.id} className="word-row">
-                      <div className="word-row-de">
-                        <SpeakBtn text={w.german} />
-                        <span className="word-row-text">{w.german}</span>
+                  {conjunctions.map((w) => {
+                    const emoji = wordEmoji(w.english);
+                    return (
+                      <div key={w.id} className="word-row">
+                        <div className="word-row-de">
+                          {emoji && <span className="word-emoji">{emoji}</span>}
+                          <SpeakBtn text={w.german} />
+                          <span className="word-row-text">{w.german}</span>
+                        </div>
+                        <span className="word-row-en">{w.english}</span>
                       </div>
-                      <span className="word-row-en">{w.english}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </>
             )}
@@ -379,9 +452,12 @@ export default function ChapterPage() {
             {verbs.length > 0 && (
               <>
                 <h3 className="word-group-title">{de ? "Verben" : "Verbs"}</h3>
-                {verbs.map((v) => (
+                {verbs.map((v) => {
+                  const emoji = wordEmoji(v.english);
+                  return (
                   <div key={v.id} className="verb-card-mini">
                     <div className="verb-card-header">
+                      {emoji && <span className="word-emoji">{emoji}</span>}
                       <SpeakBtn text={v.infinitive} />
                       <strong>{v.infinitive}</strong>
                       <span className="verb-card-en">{v.english}</span>
@@ -400,7 +476,8 @@ export default function ChapterPage() {
                       {v.praeteritum && <span>Präteritum: <strong>{v.praeteritum}</strong></span>}
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </>
             )}
             {verbs.length === 0 && <p className="empty-hint">{de ? "Keine Verben für diesen Tag" : "No verbs for this day"}</p>}
@@ -497,10 +574,10 @@ export default function ChapterPage() {
         {openSections.has("practice") && words.length > 0 && (
           <div className="accordion-body">
             <div className="mode-selector">
-              {(["flashcard", "typing", "mcq", "spelling"] as PracticeMode[]).map((m) => (
+              {(["flashcard", "typing", "mcq", "spelling", "article"] as PracticeMode[]).map((m) => (
                 <button key={m} className={`mode-btn${practiceMode === m ? " mode-btn--active" : ""}`}
-                  onClick={() => { setPracticeMode(m); setFlipped(false); setTypingInput(""); setSpellingInput(""); setSpellingRevealed(false); setFeedback(null); }}>
-                  {m === "flashcard" ? (de ? "Karten" : "Flip") : m === "typing" ? (de ? "Tippen" : "Type") : m === "spelling" ? (de ? "Buchstabieren" : "Spell") : "MCQ"}
+                  onClick={() => { setPracticeMode(m); setFlipped(false); setTypingInput(""); setSpellingInput(""); setSpellingRevealed(false); setFeedback(null); setArticleFeedback(null); setArticleIdx(0); }}>
+                  {m === "flashcard" ? (de ? "Karten" : "Flip") : m === "typing" ? (de ? "Tippen" : "Type") : m === "spelling" ? (de ? "Buchstabieren" : "Spell") : m === "article" ? "der/die/das" : "MCQ"}
                 </button>
               ))}
             </div>
@@ -509,6 +586,9 @@ export default function ChapterPage() {
             {feedback && (
               <div className={`feedback feedback--${feedback}`}>
                 {feedback === "correct" ? (de ? "Richtig!" : "Correct!") : `${de ? "Falsch" : "Wrong"} — ${practiceWord?.english}`}
+                {feedback === "wrong" && (
+                  <button className="btn btn--ok" onClick={dismissFeedback}>OK</button>
+                )}
               </div>
             )}
 
@@ -583,10 +663,12 @@ export default function ChapterPage() {
                   setSpellingRevealed(true);
                   setFeedback(correct ? "correct" : "wrong");
                   fetch("/api/words", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ wordId: practiceWord.id, correct }) }).catch(() => {});
-                  setTimeout(() => {
-                    setFeedback(null); setSpellingInput(""); setSpellingRevealed(false);
-                    if (practiceIdx + 1 < words.length) setPracticeIdx((i) => i + 1); else setPracticeIdx(0);
-                  }, 2000);
+                  if (correct) {
+                    setTimeout(() => {
+                      setFeedback(null); setSpellingInput(""); setSpellingRevealed(false);
+                      if (practiceIdx + 1 < words.length) setPracticeIdx((i) => i + 1); else setPracticeIdx(0);
+                    }, 1000);
+                  }
                 }}>
                   <input className="typing-input" type="text" value={spellingInput}
                     onChange={(e) => setSpellingInput(e.target.value)}
@@ -600,6 +682,50 @@ export default function ChapterPage() {
                 )}
               </div>
             )}
+
+            {practiceMode === "article" && (() => {
+              const articleWords = nouns.filter((w) => w.article);
+              const aw = articleWords[articleIdx];
+              if (!aw) return <p className="empty-hint">{de ? "Keine Nomen mit Artikel" : "No nouns with articles"}</p>;
+              const emoji = wordEmoji(aw.english);
+              return (
+                <div className="article-mode">
+                  <p className="practice-counter">{articleIdx + 1} / {articleWords.length}</p>
+                  <div className="article-prompt">
+                    {emoji && <span className="article-emoji">{emoji}</span>}
+                    <span className="article-word">{aw.german}</span>
+                    <span className="article-en">{aw.english}</span>
+                  </div>
+                  {articleFeedback && (
+                    <div className={`feedback feedback--${articleFeedback.correct ? "correct" : "wrong"}`}>
+                      {articleFeedback.correct ? (de ? "Richtig!" : "Correct!") : `${de ? "Falsch" : "Wrong"} — ${articleFeedback.answer}`}
+                      {!articleFeedback.correct && (
+                        <button className="btn btn--ok" onClick={() => {
+                          setArticleFeedback(null);
+                          if (articleIdx + 1 < articleWords.length) setArticleIdx((i) => i + 1); else setArticleIdx(0);
+                        }}>OK</button>
+                      )}
+                    </div>
+                  )}
+                  {!articleFeedback && (
+                    <div className="article-buttons">
+                      {["der", "die", "das"].map((a) => (
+                        <button key={a} className={`btn article-btn article-btn--${a}`} onClick={() => {
+                          const correct = a === aw.article;
+                          setArticleFeedback({ correct, answer: `${aw.article} ${aw.german}` });
+                          if (correct) {
+                            setTimeout(() => {
+                              setArticleFeedback(null);
+                              if (articleIdx + 1 < articleWords.length) setArticleIdx((i) => i + 1); else setArticleIdx(0);
+                            }, 1000);
+                          }
+                        }}>{a}</button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         )}
       </div>
