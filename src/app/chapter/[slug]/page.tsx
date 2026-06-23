@@ -311,7 +311,6 @@ export default function ChapterPage() {
                 <div className="word-list">
                   {nouns.map((w) => (
                     <div key={w.id} className="word-row">
-                      <WordImage word={w.english} />
                       <div className="word-row-de">
                         <SpeakBtn text={w.article ? `${w.article} ${w.german}` : w.german} />
                         {w.article && <span className="word-article">{w.article}</span>}
@@ -332,7 +331,6 @@ export default function ChapterPage() {
                 <div className="word-list">
                   {adjectives.map((w) => (
                       <div key={w.id} className="word-row">
-                        <WordImage word={w.english} />
                         <div className="word-row-de">
                           <SpeakBtn text={w.german} />
                           <span className="word-row-text">{w.german}</span>
@@ -352,7 +350,6 @@ export default function ChapterPage() {
                 <div className="word-list">
                   {adverbs.map((w) => (
                       <div key={w.id} className="word-row">
-                        <WordImage word={w.english} />
                         <div className="word-row-de">
                           <SpeakBtn text={w.german} />
                           <span className="word-row-text">{w.german}</span>
@@ -372,7 +369,6 @@ export default function ChapterPage() {
                 <div className="word-list">
                   {conjunctions.map((w) => (
                       <div key={w.id} className="word-row">
-                        <WordImage word={w.english} />
                         <div className="word-row-de">
                           <SpeakBtn text={w.german} />
                           <span className="word-row-text">{w.german}</span>
@@ -636,7 +632,6 @@ export default function ChapterPage() {
                 <div className="article-mode">
                   <p className="practice-counter">{articleIdx + 1} / {articleWords.length}</p>
                   <div className="article-prompt">
-                    <WordImage word={aw.english} size={80} />
                     <span className="article-word">{aw.german}</span>
                     <span className="article-en">{aw.english}</span>
                   </div>
