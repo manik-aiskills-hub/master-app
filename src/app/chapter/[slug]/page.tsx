@@ -6,8 +6,8 @@ import Link from "next/link";
 import { useSettings } from "@/lib/settings-context";
 import { checkAnswer, generateMCQOptions, calculateAccuracy, type WordItem } from "@/lib/word-engine";
 
-type Section = "words" | "grammar" | "writing" | "practice" | "quiz";
-type PracticeMode = "flashcard" | "typing" | "mcq";
+type Section = "words" | "grammar" | "writing" | "practice" | "quiz" | "notes";
+type PracticeMode = "flashcard" | "typing" | "mcq" | "spelling";
 
 interface ChapterInfo {
   id: number;
@@ -115,6 +115,13 @@ export default function ChapterPage() {
   const [writingSubmitted, setWritingSubmitted] = useState(false);
   const [showModelAnswer, setShowModelAnswer] = useState(false);
 
+  // Notes state
+  const [notes, setNotes] = useState("");
+
+  // Spelling state
+  const [spellingInput, setSpellingInput] = useState("");
+  const [spellingRevealed, setSpellingRevealed] = useState(false);
+
   useEffect(() => {
     fetch("/api/chapters")
       .then((r) => r.json())
@@ -137,6 +144,16 @@ export default function ChapterPage() {
         }
       })
       .catch(() => {});
+  }, [slug]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(`notes-${slug}`);
+    if (saved) setNotes(saved);
+  }, [slug]);
+
+  const saveNotes = useCallback((text: string) => {
+    setNotes(text);
+    localStorage.setItem(`notes-${slug}`, text);
   }, [slug]);
 
   const chapterIdx = chapters.findIndex((c) => c.slug === slug);
@@ -480,10 +497,10 @@ export default function ChapterPage() {
         {openSections.has("practice") && words.length > 0 && (
           <div className="accordion-body">
             <div className="mode-selector">
-              {(["flashcard", "typing", "mcq"] as PracticeMode[]).map((m) => (
+              {(["flashcard", "typing", "mcq", "spelling"] as PracticeMode[]).map((m) => (
                 <button key={m} className={`mode-btn${practiceMode === m ? " mode-btn--active" : ""}`}
-                  onClick={() => { setPracticeMode(m); setFlipped(false); setTypingInput(""); setFeedback(null); }}>
-                  {m === "flashcard" ? (de ? "Karten" : "Flip") : m === "typing" ? (de ? "Tippen" : "Type") : "MCQ"}
+                  onClick={() => { setPracticeMode(m); setFlipped(false); setTypingInput(""); setSpellingInput(""); setSpellingRevealed(false); setFeedback(null); }}>
+                  {m === "flashcard" ? (de ? "Karten" : "Flip") : m === "typing" ? (de ? "Tippen" : "Type") : m === "spelling" ? (de ? "Buchstabieren" : "Spell") : "MCQ"}
                 </button>
               ))}
             </div>
@@ -547,6 +564,40 @@ export default function ChapterPage() {
                     <button key={opt} className="mcq-option" onClick={() => practiceAnswer(checkAnswer(opt, practiceWord.english))} disabled={!!feedback}>{opt}</button>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {practiceWord && practiceMode === "spelling" && (
+              <div className="spelling-mode">
+                <p className="spelling-hint">{de ? "Höre zu und schreibe das deutsche Wort:" : "Listen and spell the German word:"}</p>
+                <div className="spelling-english">{practiceWord.english}</div>
+                <button className="btn btn--secondary spelling-play-btn" type="button"
+                  onClick={() => speak(practiceWord.article ? `${practiceWord.article} ${practiceWord.german}` : practiceWord.german)}>
+                  🔊 {de ? "Anhören" : "Play"}
+                </button>
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  if (spellingRevealed) return;
+                  const target = practiceWord.article ? `${practiceWord.article} ${practiceWord.german}` : practiceWord.german;
+                  const correct = spellingInput.trim().toLowerCase() === target.toLowerCase();
+                  setSpellingRevealed(true);
+                  setFeedback(correct ? "correct" : "wrong");
+                  fetch("/api/words", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ wordId: practiceWord.id, correct }) }).catch(() => {});
+                  setTimeout(() => {
+                    setFeedback(null); setSpellingInput(""); setSpellingRevealed(false);
+                    if (practiceIdx + 1 < words.length) setPracticeIdx((i) => i + 1); else setPracticeIdx(0);
+                  }, 2000);
+                }}>
+                  <input className="typing-input" type="text" value={spellingInput}
+                    onChange={(e) => setSpellingInput(e.target.value)}
+                    placeholder={de ? "Deutsche Schreibweise..." : "German spelling..."} autoFocus disabled={spellingRevealed} />
+                  <button className="btn btn--primary" type="submit" disabled={spellingRevealed}>{de ? "Prüfen" : "Check"}</button>
+                </form>
+                {spellingRevealed && feedback === "wrong" && (
+                  <div className="spelling-correct-answer">
+                    {de ? "Richtig:" : "Correct:"} <strong>{practiceWord.article ? `${practiceWord.article} ${practiceWord.german}` : practiceWord.german}</strong>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -624,6 +675,32 @@ export default function ChapterPage() {
                   {de ? "Nochmal versuchen" : "Try Again"}
                 </button>
               </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* === SECTION: Notes === */}
+      <div className="accordion">
+        <button className={`accordion-header${openSections.has("notes") ? " accordion-header--open" : ""}`} onClick={() => toggleSection("notes")}>
+          <span className="accordion-icon">{openSections.has("notes") ? "▼" : "▶"}</span>
+          <span className="accordion-title">📝 {de ? "Meine Notizen" : "My Notes"}</span>
+          {notes.trim() && <span className="accordion-count">✓</span>}
+        </button>
+        {openSections.has("notes") && (
+          <div className="accordion-body">
+            <p className="notes-hint">{de ? "Schreibe deine Beobachtungen und Lernerfahrungen auf:" : "Write down your observations and learnings:"}</p>
+            <textarea
+              className="notes-textarea"
+              value={notes}
+              onChange={(e) => saveNotes(e.target.value)}
+              placeholder={de
+                ? "z.B. Der Unterschied zwischen als und wenn ist mir jetzt klar..."
+                : "e.g. I noticed that der/die/das patterns for -ung words are always die..."}
+              rows={8}
+            />
+            {notes.trim() && (
+              <p className="notes-saved">{de ? "Automatisch gespeichert" : "Auto-saved"}</p>
             )}
           </div>
         )}

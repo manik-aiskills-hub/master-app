@@ -1610,3 +1610,68 @@ body {
   justify-content: center;
   gap: 0.4rem;
 }
+
+/* Notes */
+.notes-hint {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.notes-textarea {
+  width: 100%;
+  min-height: 10rem;
+  padding: 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.notes-textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.notes-saved {
+  font-size: 0.75rem;
+  color: var(--success);
+  margin-top: 0.4rem;
+  text-align: right;
+}
+
+/* Spelling practice */
+.spelling-mode {
+  text-align: center;
+}
+
+.spelling-hint {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.spelling-english {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.spelling-play-btn {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.spelling-correct-answer {
+  margin-top: 0.75rem;
+  padding: 0.6rem 1rem;
+  background: rgba(233, 69, 96, 0.1);
+  border-radius: 0.5rem;
+  color: var(--accent);
+  font-size: 1rem;
+}
