@@ -1,59 +1,136 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-const cache: Record<string, string | null> = {};
-
-function cacheKey(word: string) {
-  return `wimg-${word.toLowerCase().replace(/\s+/g, "_")}`;
-}
-
-function loadCache(word: string): string | null | undefined {
-  const k = cacheKey(word);
-  if (k in cache) return cache[k];
-  try {
-    const stored = localStorage.getItem(k);
-    if (stored === "none") { cache[k] = null; return null; }
-    if (stored) { cache[k] = stored; return stored; }
-  } catch {}
-  return undefined;
-}
-
-function saveCache(word: string, url: string | null) {
-  const k = cacheKey(word);
-  cache[k] = url;
-  try { localStorage.setItem(k, url ?? "none"); } catch {}
-}
+const VERB_IMAGES: Record<string, string> = {
+  "to cook": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Agdz-rosino-05.jpg/330px-Agdz-rosino-05.jpg",
+  "to prepare": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Agdz-rosino-05.jpg/330px-Agdz-rosino-05.jpg",
+  "to swim": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/40._Schwimmzonen-_und_Mastersmeeting_Enns_2017_100m_Brust_Herren_USC_Traun-9897.jpg/330px-40._Schwimmzonen-_und_Mastersmeeting_Enns_2017_100m_Brust_Herren_USC_Traun-9897.jpg",
+  "to drive": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Convertible_Mercedes_Car_Driving_On_A_Highway.jpg/330px-Convertible_Mercedes_Car_Driving_On_A_Highway.jpg",
+  "to read": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Muse_reading_Louvre_CA2220_%28cropped%29.jpg/330px-Muse_reading_Louvre_CA2220_%28cropped%29.jpg",
+  "to write": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Rosetta_Stone.JPG/330px-Rosetta_Stone.JPG",
+  "to sign": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Rosetta_Stone.JPG/330px-Rosetta_Stone.JPG",
+  "to fill out": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Rosetta_Stone.JPG/330px-Rosetta_Stone.JPG",
+  "to register": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Rosetta_Stone.JPG/330px-Rosetta_Stone.JPG",
+  "to apply": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Rosetta_Stone.JPG/330px-Rosetta_Stone.JPG",
+  "to describe": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Rosetta_Stone.JPG/330px-Rosetta_Stone.JPG",
+  "to run": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Runners_JFK_Memorial_%28cropped%29.jpg/330px-Runners_JFK_Memorial_%28cropped%29.jpg",
+  "to hike": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Hiking_to_the_Ice_Lakes._San_Juan_National_Forest%2C_Colorado.jpg/330px-Hiking_to_the_Ice_Lakes._San_Juan_National_Forest%2C_Colorado.jpg",
+  "to dance": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Two_dancers.jpg/330px-Two_dancers.jpg",
+  "to buy": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Souk_in_Tunisia_1.jpg/330px-Souk_in_Tunisia_1.jpg",
+  "to sell": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Souk_in_Tunisia_1.jpg/330px-Souk_in_Tunisia_1.jpg",
+  "to order": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Souk_in_Tunisia_1.jpg/330px-Souk_in_Tunisia_1.jpg",
+  "to sleep": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Domenico_Fetti_-_Sleeping_Girl_-_WGA7863.jpg/330px-Domenico_Fetti_-_Sleeping_Girl_-_WGA7863.jpg",
+  "to speak": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Real-time_MRI_-_Speaking_%28English%29.ogv/330px--Real-time_MRI_-_Speaking_%28English%29.ogv.jpg",
+  "to say": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Real-time_MRI_-_Speaking_%28English%29.ogv/330px--Real-time_MRI_-_Speaking_%28English%29.ogv.jpg",
+  "to tell": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Real-time_MRI_-_Speaking_%28English%29.ogv/330px--Real-time_MRI_-_Speaking_%28English%29.ogv.jpg",
+  "to explain": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/A_public_high_school_teacher_in_a_classroom_in_the_United_States_08.jpg/330px-A_public_high_school_teacher_in_a_classroom_in_the_United_States_08.jpg",
+  "to complain": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Real-time_MRI_-_Speaking_%28English%29.ogv/330px--Real-time_MRI_-_Speaking_%28English%29.ogv.jpg",
+  "to fish": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Stilts_fishermen_Sri_Lanka_02.jpg/330px-Stilts_fishermen_Sri_Lanka_02.jpg",
+  "to photograph": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Photographer_Photographing_Nevada_Mountains.jpg/330px-Photographer_Photographing_Nevada_Mountains.jpg",
+  "to watch TV": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Cptvdisplay.jpg/330px-Cptvdisplay.jpg",
+  "to teach": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/A_public_high_school_teacher_in_a_classroom_in_the_United_States_08.jpg/330px-A_public_high_school_teacher_in_a_classroom_in_the_United_States_08.jpg",
+  "to stay overnight": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Jeanne%26TheForest_Fa%C3%A7ade.jpg/330px-Jeanne%26TheForest_Fa%C3%A7ade.jpg",
+  "to visit": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/New_york_times_square-terabass.jpg/330px-New_york_times_square-terabass.jpg",
+  "to visit/tour": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/New_york_times_square-terabass.jpg/330px-New_york_times_square-terabass.jpg",
+  "to travel": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/New_york_times_square-terabass.jpg/330px-New_york_times_square-terabass.jpg",
+  "to stop": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/STOP_sign.jpg/330px-STOP_sign.jpg",
+  "to find": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Mag_glass_request.jpg/330px-Mag_glass_request.jpg",
+  "to search": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Mag_glass_request.jpg/330px-Mag_glass_request.jpg",
+  "to know": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Brain_autopsy_lateral_view.jpg/330px-Brain_autopsy_lateral_view.jpg",
+  "to think": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Brain_autopsy_lateral_view.jpg/330px-Brain_autopsy_lateral_view.jpg",
+  "to remember": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Brain_autopsy_lateral_view.jpg/330px-Brain_autopsy_lateral_view.jpg",
+  "to learn": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Cooking_contest_140418-N-OX321-101.jpg/330px-Cooking_contest_140418-N-OX321-101.jpg",
+  "to study": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Cooking_contest_140418-N-OX321-101.jpg/330px-Cooking_contest_140418-N-OX321-101.jpg",
+  "to repeat": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Cooking_contest_140418-N-OX321-101.jpg/330px-Cooking_contest_140418-N-OX321-101.jpg",
+  "to understand": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Gluehlampe_01_KMJ.png/330px-Gluehlampe_01_KMJ.png",
+  "to need": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Gluehlampe_01_KMJ.png/330px-Gluehlampe_01_KMJ.png",
+  "to live": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Katsura_Imperial_Villa_in_Spring.jpg/330px-Katsura_Imperial_Villa_in_Spring.jpg",
+  "to rent": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Katsura_Imperial_Villa_in_Spring.jpg/330px-Katsura_Imperial_Villa_in_Spring.jpg",
+  "to furnish": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/8th_Century_BCE_Assyrian_Plaque_from_Fort_Shalmaneser._in_Nimrud.jpg/330px-8th_Century_BCE_Assyrian_Plaque_from_Fort_Shalmaneser._in_Nimrud.jpg",
+  "to enjoy": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Girl_of_Vietnam.jpg/330px-Girl_of_Vietnam.jpg",
+  "to like": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Girl_of_Vietnam.jpg/330px-Girl_of_Vietnam.jpg",
+  "to love": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Heart_anterior_exterior_view.png/330px-Heart_anterior_exterior_view.png",
+  "to arrive": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Airport_infrastructure.png/330px-Airport_infrastructure.png",
+  "to depart": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Airport_infrastructure.png/330px-Airport_infrastructure.png",
+  "to board": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Airport_infrastructure.png/330px-Airport_infrastructure.png",
+  "to fly": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Airport_infrastructure.png/330px-Airport_infrastructure.png",
+  "to feel": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Sixteen_faces_expressing_the_human_passions._Wellcome_L0068375_%28cropped%29.jpg/330px-Sixteen_faces_expressing_the_human_passions._Wellcome_L0068375_%28cropped%29.jpg",
+  "to help": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/ISO_7010_E003_-_First_aid_sign.svg/330px-ISO_7010_E003_-_First_aid_sign.svg.png",
+  "to bake": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Freshly_baked_bread_loaves.jpg/330px-Freshly_baked_bread_loaves.jpg",
+  "to eat": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Amandines_de_Provence%2C_poster_by_Leonetto_Cappiello%2C_1900.jpg/330px-Amandines_de_Provence%2C_poster_by_Leonetto_Cappiello%2C_1900.jpg",
+  "to taste": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Taste_bud.svg/330px-Taste_bud.svg.png",
+  "to try/taste": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Taste_bud.svg/330px-Taste_bud.svg.png",
+  "to drink": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Nordkirchen-100415-12272-Trinkender.jpg/330px-Nordkirchen-100415-12272-Trinkender.jpg",
+  "to try on": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Clothes.jpg/330px-Clothes.jpg",
+  "to wear/carry": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Clothes.jpg/330px-Clothes.jpg",
+  "to have": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Hand%2C_fingers_-_back.jpg/330px-Hand%2C_fingers_-_back.jpg",
+  "to take": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Hand%2C_fingers_-_back.jpg/330px-Hand%2C_fingers_-_back.jpg",
+  "to hurt": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Wrist_pain.jpg/330px-Wrist_pain.jpg",
+  "to celebrate": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/New_Year%27s_Eve_on_Sydney_Harbour.jpg/330px-New_Year%27s_Eve_on_Sydney_Harbour.jpg",
+  "to congratulate": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/New_Year%27s_Eve_on_Sydney_Harbour.jpg/330px-New_Year%27s_Eve_on_Sydney_Harbour.jpg",
+  "to listen": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/S%C5%82uchawki_referencyjne_K-701_firmy_AKG.jpg/330px-S%C5%82uchawki_referencyjne_K-701_firmy_AKG.jpg",
+  "to hear": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/S%C5%82uchawki_referencyjne_K-701_firmy_AKG.jpg/330px-S%C5%82uchawki_referencyjne_K-701_firmy_AKG.jpg",
+  "to sing": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Ah_cricket_20122_%287364759010%29.jpg/330px-Ah_cricket_20122_%287364759010%29.jpg",
+  "to paint": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/330px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg",
+  "to renovate": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/330px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg",
+  "to smoke": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Smoke_%2834942422652%29.jpg/330px-Smoke_%2834942422652%29.jpg",
+  "to quit": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Smoke_%2834942422652%29.jpg/330px-Smoke_%2834942422652%29.jpg",
+  "to marry": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Hindu_wedding_rituals_b_%28cropped%29.jpg/330px-Hindu_wedding_rituals_b_%28cropped%29.jpg",
+  "to operate": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Cardiac_surgery_operating_room.jpg/330px-Cardiac_surgery_operating_room.jpg",
+  "to examine": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Cardiac_surgery_operating_room.jpg/330px-Cardiac_surgery_operating_room.jpg",
+  "to prescribe": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Cardiac_surgery_operating_room.jpg/330px-Cardiac_surgery_operating_room.jpg",
+  "to recover": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Cardiac_surgery_operating_room.jpg/330px-Cardiac_surgery_operating_room.jpg",
+  "to vaccinate": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Young_girl_about_to_receive_a_vaccine_in_her_upper_arm_%2848545990252%29.jpg/330px-Young_girl_about_to_receive_a_vaccine_in_her_upper_arm_%2848545990252%29.jpg",
+  "to cough": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Toux_impromptue.jpg",
+  "to phone": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Telefon_BW_2012-02-18_13-44-32.JPG/330px-Telefon_BW_2012-02-18_13-44-32.JPG",
+  "to call": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Telefon_BW_2012-02-18_13-44-32.JPG/330px-Telefon_BW_2012-02-18_13-44-32.JPG",
+  "to pack": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Suitcase1.jpg/330px-Suitcase1.jpg",
+  "to introduce": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Hermandad_-_friendship.jpg/330px-Hermandad_-_friendship.jpg",
+  "to meet": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Hermandad_-_friendship.jpg/330px-Hermandad_-_friendship.jpg",
+  "to greet": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Hermandad_-_friendship.jpg/330px-Hermandad_-_friendship.jpg",
+  "to wait": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Tai_Po_Voting_queue-20200712.jpg/330px-Tai_Po_Voting_queue-20200712.jpg",
+  "to turn": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Steering_wheels_from_different_periods.jpg/330px-Steering_wheels_from_different_periods.jpg",
+  "to invite": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Envelope_-_Boonville_Address-000.jpg/330px-Envelope_-_Boonville_Address-000.jpg",
+  "to send": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Envelope_-_Boonville_Address-000.jpg/330px-Envelope_-_Boonville_Address-000.jpg",
+  "to cut": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Standard_household_scissors.jpg/330px-Standard_household_scissors.jpg",
+  "to pass (exam)": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Line_of_young_people_at_a_commencement_ceremony.jpg/330px-Line_of_young_people_at_a_commencement_ceremony.jpg",
+  "to complete": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Line_of_young_people_at_a_commencement_ceremony.jpg/330px-Line_of_young_people_at_a_commencement_ceremony.jpg",
+  "to refuel": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Mattoon_Service_Station_%28pre-fabricated%29%2C_angle_view%2C_National_%26_Washington_Boulevards%2C_Culver_City%2C_California_LOC_37555778230.jpg/330px-Mattoon_Service_Station_%28pre-fabricated%29%2C_angle_view%2C_National_%26_Washington_Boulevards%2C_Culver_City%2C_California_LOC_37555778230.jpg",
+  "to park": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Parked_cars_on_street.jpg/330px-Parked_cars_on_street.jpg",
+  "to save": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Sparschwein_Haspa02.jpg/330px-Sparschwein_Haspa02.jpg",
+  "to earn": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Euro_coins_and_banknotes_%28cropped%29.jpg/330px-Euro_coins_and_banknotes_%28cropped%29.jpg",
+  "to pay": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Euro_coins_and_banknotes_%28cropped%29.jpg/330px-Euro_coins_and_banknotes_%28cropped%29.jpg",
+  "to cost": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Euro_coins_and_banknotes_%28cropped%29.jpg/330px-Euro_coins_and_banknotes_%28cropped%29.jpg",
+  "to exchange": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Euro_coins_and_banknotes_%28cropped%29.jpg/330px-Euro_coins_and_banknotes_%28cropped%29.jpg",
+  "to transfer": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Euro_coins_and_banknotes_%28cropped%29.jpg/330px-Euro_coins_and_banknotes_%28cropped%29.jpg",
+  "to cross": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/CrossWalk_%285465840138%29.jpg/330px-CrossWalk_%285465840138%29.jpg",
+  "to walk": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/CrossWalk_%285465840138%29.jpg/330px-CrossWalk_%285465840138%29.jpg",
+  "to come": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/CrossWalk_%285465840138%29.jpg/330px-CrossWalk_%285465840138%29.jpg",
+  "to clean": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Woman_washing_hands.jpg/330px-Woman_washing_hands.jpg",
+  "to wash": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Woman_washing_hands.jpg/330px-Woman_washing_hands.jpg",
+  "to tidy up": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Woman_washing_hands.jpg/330px-Woman_washing_hands.jpg",
+  "to open": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/L-door.png/330px-L-door.png",
+  "to close": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/L-door.png/330px-L-door.png",
+  "to get off": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/LTZ1328-19-20241030-160332.jpg/330px-LTZ1328-19-20241030-160332.jpg",
+  "to brake": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Disc_brake.jpg/330px-Disc_brake.jpg",
+  "to lead": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Wishnu_Wardhana_-_Opening_APEC_CEO_Summit_2013.jpg/330px-Wishnu_Wardhana_-_Opening_APEC_CEO_Summit_2013.jpg",
+  "to be": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Girl_of_Vietnam.jpg/330px-Girl_of_Vietnam.jpg",
+  "to be called": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Hermandad_-_friendship.jpg/330px-Hermandad_-_friendship.jpg",
+  "to make/do": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Pottery_in_Japan_02.jpg/330px-Pottery_in_Japan_02.jpg",
+  "to work": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/West_side_of_Manhattan_from_Hudson_Commons_%2895103p%29.jpg/330px-West_side_of_Manhattan_from_Hudson_Commons_%2895103p%29.jpg",
+  "to move": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Suitcase1.jpg/330px-Suitcase1.jpg",
+  "to book": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Jeanne%26TheForest_Fa%C3%A7ade.jpg/330px-Jeanne%26TheForest_Fa%C3%A7ade.jpg",
+  "to relax": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Girl_of_Vietnam.jpg/330px-Girl_of_Vietnam.jpg",
+  "to play": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Two_dancers.jpg/330px-Two_dancers.jpg",
+  "to practice": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Runners_JFK_Memorial_%28cropped%29.jpg/330px-Runners_JFK_Memorial_%28cropped%29.jpg",
+  "to argue": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Real-time_MRI_-_Speaking_%28English%29.ogv/330px--Real-time_MRI_-_Speaking_%28English%29.ogv.jpg",
+  "to arrange": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Gluehlampe_01_KMJ.png/330px-Gluehlampe_01_KMJ.png",
+  "to lose weight": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Runners_JFK_Memorial_%28cropped%29.jpg/330px-Runners_JFK_Memorial_%28cropped%29.jpg",
+  "to look": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Mag_glass_request.jpg/330px-Mag_glass_request.jpg",
+  "to see": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Mag_glass_request.jpg/330px-Mag_glass_request.jpg",
+};
 
 export default function WordImage({ word, size = 40 }: { word: string; size?: number }) {
-  const [src, setSrc] = useState<string | null>(null);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    const cached = loadCache(word);
-    if (cached !== undefined) {
-      setSrc(cached);
-      return;
-    }
-
-    let cancelled = false;
-    const term = word.toLowerCase().split(/[,;(]/)[0].trim();
-
-    fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(term)}`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        if (cancelled) return;
-        const url = data?.thumbnail?.source ?? null;
-        saveCache(word, url);
-        setSrc(url);
-      })
-      .catch(() => {
-        if (!cancelled) { saveCache(word, null); setSrc(null); }
-      });
-
-    return () => { cancelled = true; };
-  }, [word]);
-
+  const src = VERB_IMAGES[word.toLowerCase().trim()];
   if (!src) return null;
 
   return (
@@ -64,9 +141,6 @@ export default function WordImage({ word, size = 40 }: { word: string; size?: nu
       width={size}
       height={size}
       loading="lazy"
-      onLoad={() => setLoaded(true)}
-      onError={() => setSrc(null)}
-      style={{ opacity: loaded ? 1 : 0 }}
     />
   );
 }
