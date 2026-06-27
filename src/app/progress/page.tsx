@@ -89,7 +89,10 @@ export default function ProgressPage() {
           <span className="stat-label">/ {data.totalChapters} {language === "de" ? "Kapitel" : "Chapters"}</span>
         </div>
         <div className="stat-card">
-          <span className="stat-number">{streak}</span>
+          <div className="streak-flame">
+            <span className="streak-flame__icon">🔥</span>
+            <span className="stat-number">{streak}</span>
+          </div>
           <span className="stat-label">{language === "de" ? "Tage Serie" : "Day Streak"}</span>
         </div>
       </div>
@@ -116,7 +119,11 @@ export default function ProgressPage() {
         </p>
       )}
 
-      <a href="/mock-test" className="btn btn--primary" style={{ display: "block", textAlign: "center", marginTop: "1rem" }}>
+      <a href="/review" className="btn btn--primary" style={{ display: "block", textAlign: "center", marginTop: "1rem" }}>
+        🤖 {language === "de" ? "Mit Claude üben" : "Review with Claude"}
+      </a>
+
+      <a href="/mock-test" className="btn btn--secondary" style={{ display: "block", textAlign: "center", marginTop: "0.5rem" }}>
         {language === "de" ? "Probetests ansehen" : "View Mock Tests"}
       </a>
     </main>

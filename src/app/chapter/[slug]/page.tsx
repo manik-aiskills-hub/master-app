@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useSettings } from "@/lib/settings-context";
 import { checkAnswer, generateMCQOptions, calculateAccuracy, type WordItem } from "@/lib/word-engine";
+import { addWrongAnswer, isBookmarked, toggleBookmark, type WrongAnswer } from "@/lib/wrong-answers";
 import WordImage from "@/components/WordImage";
 
 type Section = "words" | "grammar" | "writing" | "practice" | "quiz" | "notes";
@@ -187,7 +188,7 @@ export default function ChapterPage() {
     }
   }, [practiceIdx, practiceMode, practiceWord, words]);
 
-  const practiceAnswer = useCallback((correct: boolean) => {
+  const practiceAnswer = useCallback((correct: boolean, userAnswer = "") => {
     if (!practiceWord) return;
     setFeedback(correct ? "correct" : "wrong");
     fetch("/api/words", {
@@ -195,6 +196,18 @@ export default function ChapterPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ wordId: practiceWord.id, correct }),
     }).catch(() => {});
+    if (!correct) {
+      addWrongAnswer({
+        wordId: practiceWord.id,
+        german: practiceWord.german,
+        english: practiceWord.english,
+        article: practiceWord.article,
+        correctAnswer: practiceWord.english,
+        userAnswer,
+        mode: practiceMode,
+        chapterSlug: slug,
+      });
+    }
     if (correct) {
       setTimeout(() => {
         setFeedback(null);
@@ -204,7 +217,7 @@ export default function ChapterPage() {
         else setPracticeIdx(0);
       }, 1000);
     }
-  }, [practiceWord, practiceIdx, words.length]);
+  }, [practiceWord, practiceIdx, words.length, practiceMode, slug]);
 
   const dismissFeedback = useCallback(() => {
     setFeedback(null);
@@ -219,7 +232,7 @@ export default function ChapterPage() {
   const handlePracticeTyping = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (!practiceWord) return;
-    practiceAnswer(checkAnswer(typingInput, practiceWord.english));
+    practiceAnswer(checkAnswer(typingInput, practiceWord.english), typingInput);
   }, [practiceWord, typingInput, practiceAnswer]);
 
   // Quiz logic
@@ -247,7 +260,19 @@ export default function ChapterPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ wordId: quizWord.id, correct }),
     }).catch(() => {});
-  }, [quizWord, quizInput, quizFeedback]);
+    if (!correct) {
+      addWrongAnswer({
+        wordId: quizWord.id,
+        german: quizWord.german,
+        english: quizWord.english,
+        article: quizWord.article,
+        correctAnswer: quizWord.english,
+        userAnswer: quizInput,
+        mode: "quiz",
+        chapterSlug: slug,
+      });
+    }
+  }, [quizWord, quizInput, quizFeedback, slug]);
 
   const nextQuizQuestion = useCallback(() => {
     setQuizFeedback(null);
@@ -526,9 +551,21 @@ export default function ChapterPage() {
 
             {feedback && (
               <div className={`feedback feedback--${feedback}`}>
-                {feedback === "correct" ? (de ? "Richtig!" : "Correct!") : `${de ? "Falsch" : "Wrong"} — ${practiceWord?.english}`}
-                {feedback === "wrong" && (
-                  <button className="btn btn--ok" onClick={dismissFeedback}>OK</button>
+                <div className="feedback__text">
+                  {feedback === "correct" ? (de ? "Richtig! ✓" : "Correct! ✓") : `${de ? "Falsch" : "Wrong"} — ${practiceWord?.english}`}
+                </div>
+                {feedback === "wrong" && practiceWord && (
+                  <div className="feedback__actions">
+                    <label className="feedback__bookmark">
+                      <input
+                        type="checkbox"
+                        checked={isBookmarked(practiceWord.id)}
+                        onChange={() => toggleBookmark(practiceWord.id)}
+                      />
+                      <span>{de ? "Zum Üben merken" : "Save for review"}</span>
+                    </label>
+                    <button className="btn btn--ok" onClick={dismissFeedback}>OK</button>
+                  </div>
                 )}
               </div>
             )}
@@ -582,7 +619,7 @@ export default function ChapterPage() {
                 </div>
                 <div className="mcq-options">
                   {mcqOptions.map((opt) => (
-                    <button key={opt} className="mcq-option" onClick={() => practiceAnswer(checkAnswer(opt, practiceWord.english))} disabled={!!feedback}>{opt}</button>
+                    <button key={opt} className="mcq-option" onClick={() => practiceAnswer(checkAnswer(opt, practiceWord.english), opt)} disabled={!!feedback}>{opt}</button>
                   ))}
                 </div>
               </div>
@@ -604,6 +641,9 @@ export default function ChapterPage() {
                   setSpellingRevealed(true);
                   setFeedback(correct ? "correct" : "wrong");
                   fetch("/api/words", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ wordId: practiceWord.id, correct }) }).catch(() => {});
+                  if (!correct) {
+                    addWrongAnswer({ wordId: practiceWord.id, german: practiceWord.german, english: practiceWord.english, article: practiceWord.article, correctAnswer: target, userAnswer: spellingInput, mode: "spelling", chapterSlug: slug });
+                  }
                   if (correct) {
                     setTimeout(() => {
                       setFeedback(null); setSpellingInput(""); setSpellingRevealed(false);
@@ -652,6 +692,9 @@ export default function ChapterPage() {
                         <button key={a} className={`btn article-btn article-btn--${a}`} onClick={() => {
                           const correct = a === aw.article;
                           setArticleFeedback({ correct, answer: `${aw.article} ${aw.german}` });
+                          if (!correct) {
+                            addWrongAnswer({ wordId: aw.id, german: aw.german, english: aw.english, article: aw.article, correctAnswer: `${aw.article} ${aw.german}`, userAnswer: a, mode: "article", chapterSlug: slug });
+                          }
                           if (correct) {
                             setTimeout(() => {
                               setArticleFeedback(null);
@@ -704,9 +747,21 @@ export default function ChapterPage() {
 
                 {quizFeedback && (
                   <div className={`feedback feedback--${quizFeedback.type}`}>
-                    {quizFeedback.type === "correct"
-                      ? (de ? "Richtig!" : "Correct!")
-                      : `${de ? "Falsch" : "Wrong"} — ${quizFeedback.answer}`}
+                    <div className="feedback__text">
+                      {quizFeedback.type === "correct"
+                        ? (de ? "Richtig! ✓" : "Correct! ✓")
+                        : `${de ? "Falsch" : "Wrong"} — ${quizFeedback.answer}`}
+                    </div>
+                    {quizFeedback.type === "wrong" && quizWord && (
+                      <label className="feedback__bookmark">
+                        <input
+                          type="checkbox"
+                          checked={isBookmarked(quizWord.id)}
+                          onChange={() => toggleBookmark(quizWord.id)}
+                        />
+                        <span>{de ? "Zum Üben merken" : "Save for review"}</span>
+                      </label>
+                    )}
                   </div>
                 )}
 
